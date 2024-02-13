@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FantasyStockTrader.Controllers
+namespace FantasyStockTrader.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

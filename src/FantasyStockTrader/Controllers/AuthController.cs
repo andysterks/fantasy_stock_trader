@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
 {
@@ -7,5 +6,6 @@ namespace FantasyStockTrader.Web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+
     }
 }
