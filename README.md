@@ -12,6 +12,13 @@ Sign up for account and start trading [here](https://github.com/andysterks)
 
 <image src="tbd.png">
 
+## Local Installation Instructions
+
+1. Install docker CLI
+2. On command line run `docker pull postgres`
+3. On command line run `docker build -t "fantasy_stock_trader" ./database`
+4. On command line run `docker run --name fantasy_stock_trader -p 5432:5432 -d fantasy_stock_trader`
+
 ## Summary
 
 TBD

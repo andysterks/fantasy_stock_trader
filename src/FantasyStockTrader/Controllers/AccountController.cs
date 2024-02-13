@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
 {
@@ -7,5 +6,18 @@ namespace FantasyStockTrader.Web.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        [HttpPost]
+        public void Post([FromBody] AccountInputModel accountInputModel)
+        {
+            
+        }
+    }
+
+    public class AccountInputModel
+    {
+        public string EmailAddress { get; set; }
+        public string Password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

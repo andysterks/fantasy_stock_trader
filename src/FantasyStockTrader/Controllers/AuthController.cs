@@ -6,6 +6,10 @@ namespace FantasyStockTrader.Web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        [HttpPost]
+        public void Post()
+        {
 
+        }
     }
 }
