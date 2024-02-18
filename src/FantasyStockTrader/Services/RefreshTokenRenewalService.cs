@@ -1,4 +1,4 @@
-﻿using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
 using System.Security.Cryptography;
 using FantasyStockTrader.Core;
@@ -18,8 +18,8 @@ namespace FantasyStockTrader.Web.Services
         private readonly FantasyStockTraderContext _dbContext;
         private readonly IConfiguration _configuration;
 
-        public RefreshTokenRenewalService(IAuthCookieService authCookieService, 
-            IAuthTokenCreationService authTokenCreationService, 
+        public RefreshTokenRenewalService(IAuthCookieService authCookieService,
+            IAuthTokenCreationService authTokenCreationService,
             FantasyStockTraderContext dbContext, IConfiguration configuration)
         {
             _authCookieService = authCookieService;
@@ -38,7 +38,7 @@ namespace FantasyStockTrader.Web.Services
                 .FirstOrDefault(x => x.RefreshToken == refreshToken);
             VerifySessionExists(matchingSession);
             VerifyRefreshTokenIsCurrent(matchingSession!);
-            
+
             var newAccessToken = _authTokenCreationService.CreateToken(matchingSession!.Account.EmailAddress);
             var newRefreshToken = GenerateRefreshToken();
 
@@ -61,7 +61,7 @@ namespace FantasyStockTrader.Web.Services
         {
             if (refreshToken == null)
             {
-                throw new FSTAuthorizationException("Refresh token is missing.");
+                throw new FTSAuthorizationException("Refresh token is missing.");
             }
         }
 
@@ -69,7 +69,7 @@ namespace FantasyStockTrader.Web.Services
         {
             if (session is null)
             {
-                throw new FSTAuthorizationException("No matching refresh token");
+                throw new FTSAuthorizationException("No matching refresh token");
             }
         }
 
@@ -77,7 +77,7 @@ namespace FantasyStockTrader.Web.Services
         {
             if (session.IsExpired())
             {
-                throw new FSTAuthorizationException("Refresh token is expired");
+                throw new FTSAuthorizationException("Refresh token is expired");
             }
         }
 

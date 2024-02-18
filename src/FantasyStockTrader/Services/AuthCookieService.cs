@@ -18,7 +18,7 @@ namespace FantasyStockTrader.Web.Services
         public const string AccessTokenCookieId = "fst-access-id";
         public const string RefreshCookieId = "fst-refresh-id";
 
-        public AuthCookieService(IHttpContextAccessor contextAccessor, 
+        public AuthCookieService(IHttpContextAccessor contextAccessor,
             IConfiguration configuration)
         {
             _contextAccessor = contextAccessor;

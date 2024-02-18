@@ -19,7 +19,7 @@ namespace FantasyStockTrader.Web
             {
                 await _next(httpContext);
             }
-            catch (FSTAuthorizationException ex)
+            catch (FTSAuthorizationException ex)
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 var error = new ErrorDTO(ex.Message);

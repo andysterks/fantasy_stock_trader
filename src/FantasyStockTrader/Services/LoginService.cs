@@ -1,4 +1,6 @@
-﻿using FantasyStockTrader.Core;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
 using System.Security.Cryptography;
@@ -7,7 +9,7 @@ namespace FantasyStockTrader.Web.Services;
 
 public interface ILoginService
 {
-    Account Login(string emailAddress, string password);
+    void Login(string emailAddress, string password);
 }
 
 public class LoginService : ILoginService
@@ -17,9 +19,10 @@ public class LoginService : ILoginService
     private readonly FantasyStockTraderContext _dbContext;
     private readonly IConfiguration _configuration;
 
-    public LoginService(IAuthTokenCreationService authTokenCreationService,
+    public LoginService(
+        IAuthTokenCreationService authTokenCreationService,
         IAuthCookieService authCookieService,
-        FantasyStockTraderContext dbContext,
+        FantasyStockTraderContext dbContext, 
         IConfiguration configuration)
     {
         _authTokenCreationService = authTokenCreationService;
@@ -28,12 +31,12 @@ public class LoginService : ILoginService
         _configuration = configuration;
     }
 
-    public Account Login(string emailAddress, string password)
+    public void Login(string emailAddress, string password)
     {
         // TODO: replace with db check
         var matchingUser = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == emailAddress);
         if (matchingUser is null || matchingUser.Password != password)
-            throw new FSTAuthorizationException("Email/password combination is not correct.");
+            throw new FTSAuthorizationException("Email/password combination is not correct.");
 
         var accessToken = _authTokenCreationService.CreateToken(emailAddress);
         var refreshToken = GenerateRefreshToken();
@@ -51,8 +54,6 @@ public class LoginService : ILoginService
 
         _authCookieService.SetAccessTokenCookie(accessToken);
         _authCookieService.SetRefreshTokenCookie(session);
-
-        return matchingUser;
     }
 
     private static string GenerateRefreshToken()

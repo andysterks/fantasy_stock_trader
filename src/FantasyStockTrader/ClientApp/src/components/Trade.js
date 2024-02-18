@@ -10,13 +10,14 @@ function Trade() {
 
   const search = (e) => {
     e.preventDefault();
-    axios.get('api/company', { params: { query: searchQuery } })
-      .then(response => setCompanies(response.data))
-  }
+    axios
+      .get("api/company", { params: { query: searchQuery } })
+      .then((response) => setCompanies(response.data));
+  };
 
   const navigateToBuy = (symbol) => {
-    navigate(`/trade/buy/${symbol}`)
-  }
+    navigate(`/trade/buy/${symbol}`);
+  };
 
   return (
     <div>
@@ -25,12 +26,21 @@ function Trade() {
       <div>
         <h1>Search</h1>
         <form onSubmit={search}>
-          <input type="text" placeholder="Enter company symbol" onChange={(e) => setSearchQuery(e.target.value)} value={searchQuery} />
+          <input
+            type="text"
+            placeholder="Enter company symbol"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+          />
           <button type="submit">Search</button>
         </form>
         <div>
           <ul>
-            {companies.map(c => <li key={c.symbol} onClick={() => navigateToBuy(c.symbol)}>{c.name} ({c.symbol})</li>)}
+            {companies.map((c) => (
+              <li key={c.symbol} onClick={() => navigateToBuy(c.symbol)}>
+                {c.name} ({c.symbol})
+              </li>
+            ))}
           </ul>
         </div>
       </div>

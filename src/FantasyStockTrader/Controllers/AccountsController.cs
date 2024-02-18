@@ -13,8 +13,8 @@ public class AccountsController : ControllerBase
     private readonly IAuthContext _authContext;
     private readonly IFinnhubApiService _finnhubApiService;
 
-    public AccountsController(FantasyStockTraderContext dbContext, 
-        IAuthContext authContext, 
+    public AccountsController(FantasyStockTraderContext dbContext,
+        IAuthContext authContext,
         IFinnhubApiService finnhubApiService)
     {
         _dbContext = dbContext;
@@ -46,13 +46,13 @@ public class AccountsController : ControllerBase
             })
             //.Select(x => new HoldingsModel(x.Symbol, x.Shares, x.CostBasis, x.Shares * stockQuote.CurrentPrice, x.Shares * stockQuote.CurrentPrice - x.CostBasis))
             .ToList();
-        
+
 
         var accountValue = holdings.Sum(x => x.Value);
         var accountCostBasis = holdings.Sum(x => x.CostBasis);
 
         return new AccountSummaryModel(
-            (double) wallet.Amount,
+            (double)wallet.Amount,
             holdings,
             accountValue,
             accountCostBasis,

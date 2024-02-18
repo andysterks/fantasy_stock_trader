@@ -48,7 +48,8 @@ function Dashboard() {
               <span
                 className={h.performance > 0 ? "text-success" : "text-danger"}
               >
-                {h.performance >= 0 ? "+" : "-"}{formatCurrency.format(Math.abs(h.performance))}
+                {h.performance >= 0 ? "+" : "-"}
+                {formatCurrency.format(Math.abs(h.performance))}
               </span>
             </li>
           ))}

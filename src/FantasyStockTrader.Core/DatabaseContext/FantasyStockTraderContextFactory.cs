@@ -8,7 +8,7 @@ namespace FantasyStockTrader.Core.DatabaseContext
     {
         private readonly IConfiguration _configuration;
 
-        public FantasyStockTraderContextFactory() {}
+        public FantasyStockTraderContextFactory() { }
 
         public FantasyStockTraderContextFactory(IConfiguration configuration)
         {

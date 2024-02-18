@@ -1,4 +1,4 @@
-﻿using FantasyStockTrader.Core.Extensions;
+using FantasyStockTrader.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
@@ -57,13 +57,12 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.Entity<Holding>()
             .HasOne(h => h.Account)
             .WithMany(a => a.Holdings)
-            .HasForeignKey(h => h.AccountId)
-            .IsRequired();
+            .HasForeignKey(h => h.AccountId);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"), 
+        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"),
             o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 

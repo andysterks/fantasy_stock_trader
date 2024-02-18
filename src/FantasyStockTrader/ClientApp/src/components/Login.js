@@ -15,7 +15,10 @@ const Login = () => {
     setError(""); // Clear previous error
 
     try {
-      const response = await axios.post("/api/auth", { emailAddress, password });
+      const response = await axios.post("/api/auth", {
+        emailAddress,
+        password,
+      });
       setAccount(response.data);
       navigate("/dashboard");
     } catch (error) {

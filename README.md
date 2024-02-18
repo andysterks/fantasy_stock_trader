@@ -17,12 +17,12 @@ Sign up for account and start trading [here](https://github.com/andysterks)
 1. Install docker CLI
 2. On command line run `docker pull postgres`
 3. On command line run `docker build -t "fantasy_stock_trader" ./database`
-4. On command line run `docker run --name fantasy_stock_trader -p 5432:5432 -d fantasy_stock_trader`
+4. On command line run `docker run --name fantasy_stock_trader -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=p@ssw0rd -d fantasy_stock_trader`
 
 ## Summary
 
 Migrations command: dotnet ef migrations add MigrationNameHere
-DB-Update Command: dotnet ef database update --connection 'connstring' --verbose
+DB-Update Command: dotnet ef database update --connection 'Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd' --verbose
 
 ## Author
 
