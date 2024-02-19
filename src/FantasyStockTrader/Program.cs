@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
 
 builder.Services.AddDbContext<FantasyStockTraderContext>(
-    options => options.UseNpgsql(connectionString, 
+    options => options.UseNpgsql(connectionString,
         builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 var app = builder.Build();
@@ -25,7 +25,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
 
 app.MapControllerRoute(
     name: "default",
