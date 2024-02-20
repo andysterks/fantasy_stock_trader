@@ -13,6 +13,8 @@ builder.Services.AddDbContext<FantasyStockTraderContext>(
     options => options.UseNpgsql(connectionString,
         builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
