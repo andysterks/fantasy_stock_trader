@@ -34,7 +34,7 @@ namespace FantasyStockTrader.Web.Services
             var token = new JwtSecurityToken(
                 _configuration["JWT:ValidIssuer"],
                 _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(tokenValidityInMinutes),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );

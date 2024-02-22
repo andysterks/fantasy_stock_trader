@@ -48,7 +48,7 @@ namespace FantasyStockTrader.Web.Services
             {
                 Account = matchingSession.Account,
                 RefreshToken = newRefreshToken,
-                ExpiresAt = DateTime.Now.AddDays(refreshTokenValidityInDays)
+                ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenValidityInDays)
             };
             _dbContext.Sessions.Add(session);
             _dbContext.SaveChanges();
