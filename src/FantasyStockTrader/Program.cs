@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("FantasyStockTr
 
 builder.Services.AddDbContext<FantasyStockTraderContext>(
     options => options.UseNpgsql(connectionString,
-        builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
+        optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();

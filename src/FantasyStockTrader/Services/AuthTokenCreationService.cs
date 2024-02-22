@@ -7,7 +7,7 @@ namespace FantasyStockTrader.Web.Services
 {
     public interface IAuthTokenCreationService
     {
-        JwtSecurityToken CreateToken(List<Claim> authClaims);
+        JwtSecurityToken CreateToken(string emailAddress);
     }
 
     public class AuthTokenCreationService : IAuthTokenCreationService
@@ -19,8 +19,15 @@ namespace FantasyStockTrader.Web.Services
             _configuration = configuration;
         }
 
-        public JwtSecurityToken CreateToken(List<Claim> authClaims)
+        public JwtSecurityToken CreateToken(string emailAddress)
         {
+            var authClaims = new List<Claim>
+            {
+                // TODO: change to email address once account is linked
+                new(ClaimTypes.Name, emailAddress),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
             _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out var tokenValidityInMinutes);

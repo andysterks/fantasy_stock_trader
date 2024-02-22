@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using FantasyStockTrader.Core;
 
 namespace FantasyStockTrader.Web.Services
 {
@@ -6,7 +7,7 @@ namespace FantasyStockTrader.Web.Services
     {
         void SetAccessTokenCookie(JwtSecurityToken token);
         string? GetRefreshTokenFromCookie();
-        void SetRefreshTokenCookie(string refreshToken);
+        void SetRefreshTokenCookie(Session session);
     }
 
     public class AuthCookieService : IAuthCookieService
@@ -42,7 +43,7 @@ namespace FantasyStockTrader.Web.Services
             return _contextAccessor.HttpContext?.Request.Cookies[RefreshCookieId];
         }
 
-        public void SetRefreshTokenCookie(string refreshToken)
+        public void SetRefreshTokenCookie(Session session)
         {
             int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
             var cookieOptions = new CookieOptions
@@ -52,7 +53,7 @@ namespace FantasyStockTrader.Web.Services
 
             _contextAccessor.HttpContext?.Response.Cookies.Append(
                 RefreshCookieId,
-                refreshToken,
+                session.RefreshToken,
                 cookieOptions);
         }
     }

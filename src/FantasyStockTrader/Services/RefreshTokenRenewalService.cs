@@ -1,11 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using FantasyStockTrader.Core.DatabaseContext;
+﻿using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
-using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using System.Security.Cryptography;
+using FantasyStockTrader.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace FantasyStockTrader.Web.Services
 {
@@ -18,67 +15,70 @@ namespace FantasyStockTrader.Web.Services
     {
         private readonly IAuthCookieService _authCookieService;
         private readonly IAuthTokenCreationService _authTokenCreationService;
-        private readonly IConfiguration _configuration;
         private readonly FantasyStockTraderContext _dbContext;
+        private readonly IConfiguration _configuration;
 
         public RefreshTokenRenewalService(IAuthCookieService authCookieService, 
             IAuthTokenCreationService authTokenCreationService, 
-            IConfiguration configuration, 
-            FantasyStockTraderContext dbContext)
+            FantasyStockTraderContext dbContext, IConfiguration configuration)
         {
             _authCookieService = authCookieService;
             _authTokenCreationService = authTokenCreationService;
-            _configuration = configuration;
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         public void Renew()
         {
             var refreshToken = _authCookieService.GetRefreshTokenFromCookie();
+            VerifyRefreshToken(refreshToken);
+
+            var matchingSession = _dbContext.Sessions
+                .Include(s => s.Account)
+                .FirstOrDefault(x => x.RefreshToken == refreshToken);
+            VerifySessionExists(matchingSession);
+            VerifyRefreshTokenIsCurrent(matchingSession!);
+            
+            var newAccessToken = _authTokenCreationService.CreateToken(matchingSession!.Account.EmailAddress);
+            var newRefreshToken = GenerateRefreshToken();
+
+            // store refresh token in db
+            int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
+            var session = new Session
+            {
+                Account = matchingSession.Account,
+                RefreshToken = newRefreshToken,
+                ExpiresAt = DateTime.Now.AddDays(refreshTokenValidityInDays)
+            };
+            _dbContext.Sessions.Add(session);
+            _dbContext.SaveChanges();
+
+            _authCookieService.SetAccessTokenCookie(newAccessToken);
+            _authCookieService.SetRefreshTokenCookie(session);
+        }
+
+        private void VerifyRefreshToken(string? refreshToken)
+        {
             if (refreshToken == null)
             {
                 throw new FTSAuthorizationException("Refresh token is missing.");
             }
+        }
 
-            var matchingSession = _dbContext.Sessions.FirstOrDefault(x => x.Id.ToString() == refreshToken);
-            if (matchingSession is null)
+        private void VerifySessionExists(Session? session)
+        {
+            if (session is null)
             {
                 throw new FTSAuthorizationException("No matching refresh token");
             }
+        }
 
-            if (matchingSession.ExpiresAt > DateTime.UtcNow)
+        private void VerifyRefreshTokenIsCurrent(Session session)
+        {
+            if (session.IsExpired())
             {
                 throw new FTSAuthorizationException("Refresh token is expired");
             }
-
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateAudience = false,
-            //    ValidateIssuer = false,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-            //    ValidateLifetime = false
-            //};
-
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var principal =
-            //    tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
-            //if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-            //    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-            //        StringComparison.InvariantCultureIgnoreCase)) throw new SecurityTokenException("Invalid token");
-
-            var authClaims = new List<Claim>
-            {
-                // TODO: change to email address once account is linked
-                new(ClaimTypes.Name, matchingSession.AccountId.ToString()),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var newAccessToken = _authTokenCreationService.CreateToken(authClaims);
-            var newRefreshToken = GenerateRefreshToken();
-
-            _authCookieService.SetAccessTokenCookie(newAccessToken);
-            _authCookieService.SetRefreshTokenCookie(newRefreshToken);
         }
 
         private static string GenerateRefreshToken()
