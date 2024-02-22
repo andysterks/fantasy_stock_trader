@@ -1,4 +1,5 @@
 using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,10 @@ builder.Services.AddDbContext<FantasyStockTraderContext>(
         builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
+builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IRefreshTokenVerificationService, RefreshTokenVerificationService>();
 
 var app = builder.Build();
 
