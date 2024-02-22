@@ -8,13 +8,13 @@ namespace FantasyStockTrader.Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ILoginService _loginService;
-    private readonly IRefreshTokenVerificationService _refreshTokenVerificationService;
+    private readonly IRefreshTokenRenewalService _refreshTokenRenewalService;
 
     public AuthController(ILoginService loginService, 
-        IRefreshTokenVerificationService refreshTokenVerificationService)
+        IRefreshTokenRenewalService refreshTokenRenewalService)
     {
         _loginService = loginService;
-        _refreshTokenVerificationService = refreshTokenVerificationService;
+        _refreshTokenRenewalService = refreshTokenRenewalService;
     }
 
     [HttpPost]
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken()
     {
-        _refreshTokenVerificationService.Generate();
+        _refreshTokenRenewalService.Renew();
 
         return Ok();
     }

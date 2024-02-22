@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Security.Cryptography;
+using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Core.Exceptions;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace FantasyStockTrader.Web.Services
@@ -13,18 +15,27 @@ namespace FantasyStockTrader.Web.Services
     {
         private readonly IAuthTokenCreationService _authTokenCreationService;
         private readonly IAuthCookieService _authCookieService;
+        private readonly FantasyStockTraderContext _dbContext;
 
         public LoginService(IAuthTokenCreationService authTokenCreationService, 
-            IAuthCookieService authCookieService)
+            IAuthCookieService authCookieService, 
+            FantasyStockTraderContext dbContext)
         {
             _authTokenCreationService = authTokenCreationService;
             _authCookieService = authCookieService;
+            _dbContext = dbContext;
         }
 
         public void Login(string emailAddress, string password)
         {
             // TODO: replace with db check
-            if (emailAddress == "admin@email.com" && password == "1234")
+            var matchingUser = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == emailAddress);
+            if (matchingUser is null || matchingUser.Password != password)
+            {
+                throw new FTSAuthorizationException("Email/password combination is not correct.");
+            }
+
+            if (matchingUser != null && matchingUser.Password == password)
             {
                 var authClaims = new List<Claim>
                 {

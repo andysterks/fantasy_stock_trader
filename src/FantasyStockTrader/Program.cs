@@ -1,4 +1,5 @@
 using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Web;
 using FantasyStockTrader.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
 builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<IRefreshTokenVerificationService, RefreshTokenVerificationService>();
+builder.Services.AddScoped<IRefreshTokenRenewalService, RefreshTokenRenewalService>();
 
 var app = builder.Build();
 
@@ -32,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

@@ -1,47 +1,64 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.IdentityModel.JsonWebTokens;
+using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Core.Exceptions;
 using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace FantasyStockTrader.Web.Services
 {
-    public interface IRefreshTokenVerificationService
+    public interface IRefreshTokenRenewalService
     {
-        void Generate();
+        void Renew();
     }
 
-    public class RefreshTokenVerificationService : IRefreshTokenVerificationService
+    public class RefreshTokenRenewalService : IRefreshTokenRenewalService
     {
         private readonly IAuthCookieService _authCookieService;
         private readonly IAuthTokenCreationService _authTokenCreationService;
         private readonly IConfiguration _configuration;
+        private readonly FantasyStockTraderContext _dbContext;
 
-        public RefreshTokenVerificationService(IAuthCookieService authCookieService, 
+        public RefreshTokenRenewalService(IAuthCookieService authCookieService, 
             IAuthTokenCreationService authTokenCreationService, 
-            IConfiguration configuration)
+            IConfiguration configuration, 
+            FantasyStockTraderContext dbContext)
         {
             _authCookieService = authCookieService;
             _authTokenCreationService = authTokenCreationService;
             _configuration = configuration;
+            _dbContext = dbContext;
         }
 
-        public void Generate()
+        public void Renew()
         {
             var refreshToken = _authCookieService.GetRefreshTokenFromCookie();
-            if (refreshToken == null) throw new Exception("change this to custom exception");
-
-            //var accessToken = _contextAccessor.HttpContext?.Request.Cookies[AccessTokenCookieId];
-            //var refreshToken = _contextAccessor.HttpContext?.Request.Cookies[AccessTokenCookieId];
-
-            var tokenValidationParameters = new TokenValidationParameters
+            if (refreshToken == null)
             {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-                ValidateLifetime = false
-            };
+                throw new FTSAuthorizationException("Refresh token is missing.");
+            }
+
+            var matchingSession = _dbContext.Sessions.FirstOrDefault(x => x.Id.ToString() == refreshToken);
+            if (matchingSession is null)
+            {
+                throw new FTSAuthorizationException("No matching refresh token");
+            }
+
+            if (matchingSession.ExpiresAt > DateTime.UtcNow)
+            {
+                throw new FTSAuthorizationException("Refresh token is expired");
+            }
+
+            //var tokenValidationParameters = new TokenValidationParameters
+            //{
+            //    ValidateAudience = false,
+            //    ValidateIssuer = false,
+            //    ValidateIssuerSigningKey = true,
+            //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+            //    ValidateLifetime = false
+            //};
 
             //var tokenHandler = new JwtSecurityTokenHandler();
             //var principal =
@@ -52,7 +69,8 @@ namespace FantasyStockTrader.Web.Services
 
             var authClaims = new List<Claim>
             {
-                new(ClaimTypes.Name, "tbd"),
+                // TODO: change to email address once account is linked
+                new(ClaimTypes.Name, matchingSession.AccountId.ToString()),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
