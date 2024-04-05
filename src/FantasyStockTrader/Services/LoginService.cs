@@ -1,9 +1,7 @@
-﻿using System.Security.Claims;
-using System.Security.Cryptography;
-using FantasyStockTrader.Core;
+﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
-using Microsoft.IdentityModel.JsonWebTokens;
+using System.Security.Cryptography;
 
 namespace FantasyStockTrader.Web.Services;
 
@@ -21,7 +19,7 @@ public class LoginService : ILoginService
 
     public LoginService(IAuthTokenCreationService authTokenCreationService,
         IAuthCookieService authCookieService,
-        FantasyStockTraderContext dbContext, 
+        FantasyStockTraderContext dbContext,
         IConfiguration configuration)
     {
         _authTokenCreationService = authTokenCreationService;
@@ -37,29 +35,22 @@ public class LoginService : ILoginService
         if (matchingUser is null || matchingUser.Password != password)
             throw new FTSAuthorizationException("Email/password combination is not correct.");
 
-        if (matchingUser != null && matchingUser.Password == password)
+        var accessToken = _authTokenCreationService.CreateToken(emailAddress);
+        var refreshToken = GenerateRefreshToken();
+
+        int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
+        var session = new Session
         {
-            var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.Name, emailAddress),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+            Account = matchingUser,
+            RefreshToken = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenValidityInDays)
+        };
 
-            var accessToken = _authTokenCreationService.CreateToken(emailAddress);
-            var refreshToken = GenerateRefreshToken();
-            int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
-            var session = new Session
-            {
-                Account = matchingUser,
-                RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenValidityInDays)
-            };
-            _dbContext.Sessions.Add(session);
-            _dbContext.SaveChanges();
+        _dbContext.Sessions.Add(session);
+        _dbContext.SaveChanges();
 
-            _authCookieService.SetAccessTokenCookie(accessToken);
-            _authCookieService.SetRefreshTokenCookie(session);
-        }
+        _authCookieService.SetAccessTokenCookie(accessToken);
+        _authCookieService.SetRefreshTokenCookie(session);
     }
 
     private static string GenerateRefreshToken()

@@ -1,19 +1,33 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function Home() {
-  const [email, setEmail] = useState("");
+function Login() {
+  const [emailAddress, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const login = (e) => {
+    e.preventDefault();
+
+    axios.post("api/auth", { emailAddress, password }).then((response) => {
+      console.log(response);
+      // redirect to home page
+      navigate("/dashboard");
+    });
+  };
 
   return (
     <div className="row d-flex justify-content-center">
       <div className="col-md-6">
-        <form>
+        <form onSubmit={login}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               className="form-control"
-              value={email}
+              value={emailAddress}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -28,10 +42,12 @@ function Home() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          <button type="submit">Login</button>
         </form>
       </div>
     </div>
   );
 }
 
-export default Home;
+export default Login;
