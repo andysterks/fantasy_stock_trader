@@ -1,4 +1,6 @@
 using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Web;
+using FantasyStockTrader.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,15 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
 
 builder.Services.AddDbContext<FantasyStockTraderContext>(
-    options => options.UseNpgsql(connectionString, 
-        builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
+    options => options.UseNpgsql(connectionString,
+        optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
+builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IRefreshTokenRenewalService, RefreshTokenRenewalService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -26,6 +35,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
