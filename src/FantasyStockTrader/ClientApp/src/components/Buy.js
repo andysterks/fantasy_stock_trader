@@ -13,6 +13,14 @@ function Buy() {
         .then(response => setBuySummary(response.data))
   }, []);
   
+  const updateShareAmount = (value) => {
+    var intValue = parseInt(value === "" ? 0 : value);
+
+    if (isNaN(intValue)) {
+        return;
+    }
+    setSharesToBuy(intValue);
+  }
 
   return (
     <>
@@ -23,7 +31,7 @@ function Buy() {
       </div>
       <div>
         <h3>Transaction details</h3>
-        <input type="text" placeholder="no. of shares" onChange={(e) => { setSharesToBuy(e.target.value) }} value={sharesToBuy} />
+        <input type="text" placeholder="no. of shares" onChange={(e) => { updateShareAmount(e.target.value) }} value={sharesToBuy} />
         {buySummary && (
           <>
             <p>Current Price: ${buySummary.currentPrice}</p>
