@@ -1,8 +1,17 @@
+using FantasyStockTrader.Core.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
+
+builder.Services.AddDbContext<FantasyStockTraderContext>(
+    options => options.UseNpgsql(connectionString, 
+        builder => builder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 var app = builder.Build();
 
