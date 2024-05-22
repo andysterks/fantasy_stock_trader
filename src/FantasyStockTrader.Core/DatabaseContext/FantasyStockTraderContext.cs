@@ -8,6 +8,13 @@ namespace FantasyStockTrader.Core.DatabaseContext
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.UseSerialColumns();
+
+            modelBuilder.Entity<Account>();
+        }
+
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
