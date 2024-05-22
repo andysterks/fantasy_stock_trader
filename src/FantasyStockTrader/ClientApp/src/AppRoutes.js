@@ -2,6 +2,7 @@ import { Counter } from "./components/Counter";
 import Dashboard from "./components/Dashboard";
 import { FetchData } from "./components/FetchData";
 import Login from "./components/Login";
+import Buy from "./components/Buy";
 import Trade from "./components/Trade";
 
 const AppRoutes = [
@@ -16,6 +17,10 @@ const AppRoutes = [
   {
     path: "/trade",
     element: <Trade />,
+  },
+  {
+    path: "/trade/buy/:symbol",
+    element: <Buy />,
   },
   {
     path: "/counter",
