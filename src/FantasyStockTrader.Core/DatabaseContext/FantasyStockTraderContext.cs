@@ -9,5 +9,8 @@ namespace FantasyStockTrader.Core.DatabaseContext
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Holding> Holdings { get; set; }
     }
 }
