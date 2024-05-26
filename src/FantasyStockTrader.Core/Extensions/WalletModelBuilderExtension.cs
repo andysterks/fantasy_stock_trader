@@ -11,8 +11,8 @@ namespace FantasyStockTrader.Core.Extensions
 
             modelBuilder.Entity<Wallet>()
                 .HasOne(w => w.Account)
-                .WithMany()
-                .HasForeignKey(w => w.Account.Id)
+                .WithOne()
+                .HasForeignKey<Wallet>(w => w.AccountId)
                 .IsRequired();
         }
     }
