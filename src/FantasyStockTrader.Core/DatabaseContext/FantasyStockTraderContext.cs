@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FantasyStockTrader.Core.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
-using Microsoft.Extensions.Configuration;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
@@ -37,38 +37,9 @@ public class FantasyStockTraderContext : DbContext
             .WithMany()
             .IsRequired();
 
-        modelBuilder.Entity<Account>()
-            .HasKey(a => a.Id);
+        modelBuilder.ConfigureAccount();
 
-        modelBuilder.Entity<Account>()
-            .Property(a => a.EmailAddress)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        modelBuilder.Entity<Account>()
-            .HasIndex(a => a.EmailAddress)
-            .HasDatabaseName("UXC_Account_EmailAddress")
-            .IsUnique();
-
-        modelBuilder.Entity<Account>()
-            .Property(a => a.FirstName)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        modelBuilder.Entity<Account>()
-            .Property(a => a.Password)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        modelBuilder.Entity<Account>()
-            .Property(a => a.LastName)
-            .IsRequired()
-            .HasMaxLength(75);
-
-        modelBuilder.Entity<Account>()
-            .Property(a => a.CreatedAt)
-            .HasValueGenerator<CreatedAtGenerator>()
-            .IsRequired();
+        modelBuilder.ConfigureWallet();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -82,6 +53,7 @@ public class FantasyStockTraderContext : DbContext
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Holding> Holdings { get; set; }
+    public DbSet<Wallet> Wallets { get; set; }
 }
 
 public class CreatedAtGenerator : ValueGenerator
