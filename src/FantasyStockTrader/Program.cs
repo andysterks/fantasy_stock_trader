@@ -16,6 +16,9 @@ builder.Services.AddDbContext<FantasyStockTraderContext>(
     options => options.UseNpgsql(connectionString,
         optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
 
+builder.Services.AddAuthentication("FSTScheme")
+    .AddScheme<CookieAuthenticationOptions, CookieAuthenticationHandler>("FSTScheme", null);
+
 builder.Services.AddScoped((sp) => sp.GetRequiredService<IAuthUserGenerationService>().GetAuthContext());
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -40,6 +43,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

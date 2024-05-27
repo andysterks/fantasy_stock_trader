@@ -1,9 +1,11 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WalletController : ControllerBase
