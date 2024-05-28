@@ -27,7 +27,7 @@ function Buy() {
       <div>Buy ({symbol})</div>
       <div>
         <h3>Current $$$</h3>
-        <p>$100,000.45</p>
+        <p>{buySummary?.walletAmount}</p>
       </div>
       <div>
         <h3>Transaction details</h3>

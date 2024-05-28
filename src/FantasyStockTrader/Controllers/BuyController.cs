@@ -9,26 +9,29 @@ namespace FantasyStockTrader.Web.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly FantasyStockTraderContext _dbContext;
+        private readonly IAuthContext _authContext;
 
         public BuyController(IHttpClientFactory httpClientFactory, 
-            FantasyStockTraderContext dbContext)
+            FantasyStockTraderContext dbContext, 
+            IAuthContext authContext)
         {
             _httpClientFactory = httpClientFactory;
             _dbContext = dbContext;
+            _authContext = authContext;
         }
 
         [HttpGet("summary")]
         public BuySummary GetBuySummary([FromQuery] string symbol)
         {
-            var walletBalance = 100000.00;
+            var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
 
             var currentPrice = 57.85;
 
-            var maxShareAmount = (int)Math.Floor(walletBalance / currentPrice); 
+            var maxShareAmount = (int)Math.Floor((double)accountWallet.Amount / currentPrice); 
 
-            return new BuySummary(currentPrice, maxShareAmount);
+            return new BuySummary(currentPrice, maxShareAmount, accountWallet.Amount);
         }
 
-        public record BuySummary(double CurrentPrice, int MaxShareAmount);
+        public record BuySummary(double CurrentPrice, int MaxShareAmount, decimal walletAmount);
     }
 }
