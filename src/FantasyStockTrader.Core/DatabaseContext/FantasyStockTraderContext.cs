@@ -40,6 +40,12 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.ConfigureAccount();
 
         modelBuilder.ConfigureWallet();
+
+        modelBuilder.Entity<Holding>()
+            .HasOne(h => h.Account)
+            .WithMany(a => a.Holdings)
+            .HasForeignKey(h => h.AccountId)
+            .IsRequired();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

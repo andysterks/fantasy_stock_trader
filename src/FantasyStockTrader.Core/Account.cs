@@ -9,5 +9,7 @@
         public string LastName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
+        
+        public IList<Holding> Holdings { get; set; }
     }
 }

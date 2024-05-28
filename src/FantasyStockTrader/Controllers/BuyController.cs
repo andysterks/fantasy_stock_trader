@@ -1,9 +1,11 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BuyController : ControllerBase
@@ -59,6 +61,27 @@ namespace FantasyStockTrader.Web.Controllers
             // subtract from wallet
             accountWallet.Amount -= (decimal)(buyTransaction.Amount * currentPrice);
             _dbContext.Wallets.Update(accountWallet);
+
+            // add to holdings
+            var holding = _dbContext.Holdings.FirstOrDefault(x => x.Symbol == buyTransaction.Symbol 
+                                                                  && x.Account.Id == _authContext.Account.Id);
+
+            if (holding == null)
+            {
+                _dbContext.Holdings.Add(new Holding
+                {
+                    AccountId = _authContext.Account.Id,
+                    Symbol = buyTransaction.Symbol,
+                    Shares = buyTransaction.Amount,
+                    CostBasis = buyTransaction.Amount * currentPrice,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                holding.CostBasis += buyTransaction.Amount * currentPrice;
+                holding.Shares += buyTransaction.Amount;
+            }
 
             _dbContext.SaveChanges();
         }

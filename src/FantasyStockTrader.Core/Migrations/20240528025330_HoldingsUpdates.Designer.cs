@@ -3,6 +3,7 @@ using System;
 using FantasyStockTrader.Core.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FantasyStockTrader.Core.Migrations
 {
     [DbContext(typeof(FantasyStockTraderContext))]
-    partial class FantasyStockTraderContextModelSnapshot : ModelSnapshot
+    [Migration("20240528025330_HoldingsUpdates")]
+    partial class HoldingsUpdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,8 +89,6 @@ namespace FantasyStockTrader.Core.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.ToTable("Holdings");
                 });
@@ -176,17 +177,6 @@ namespace FantasyStockTrader.Core.Migrations
                     b.ToTable("Wallets");
                 });
 
-            modelBuilder.Entity("FantasyStockTrader.Core.Holding", b =>
-                {
-                    b.HasOne("FantasyStockTrader.Core.Account", "Account")
-                        .WithMany("Holdings")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("FantasyStockTrader.Core.Session", b =>
                 {
                     b.HasOne("FantasyStockTrader.Core.Account", "Account")
@@ -207,11 +197,6 @@ namespace FantasyStockTrader.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("FantasyStockTrader.Core.Account", b =>
-                {
-                    b.Navigation("Holdings");
                 });
 #pragma warning restore 612, 618
         }
