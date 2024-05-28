@@ -4,7 +4,6 @@ import globalRouter from "./GlobalRouter";
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    debugger;
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

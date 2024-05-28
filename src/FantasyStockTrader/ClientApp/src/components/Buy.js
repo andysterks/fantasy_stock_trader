@@ -22,6 +22,15 @@ function Buy() {
     setSharesToBuy(intValue);
   }
 
+  const executeBuy = () => {
+    axios.post('api/buy/execute', {
+      symbol,
+      amount: sharesToBuy
+    }).then(response => {
+      console.log('success');
+    })
+  }
+
   return (
     <>
       <div>Buy ({symbol})</div>
@@ -39,7 +48,7 @@ function Buy() {
             <p>Total cost: ${sharesToBuy * buySummary.currentPrice}</p>
           </>
         )}
-        <button>Submit</button>
+        <button onClick={executeBuy}>Submit</button>
       </div>
     </>
   );

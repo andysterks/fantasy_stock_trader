@@ -1,4 +1,5 @@
-﻿using FantasyStockTrader.Core.DatabaseContext;
+﻿using FantasyStockTrader.Core;
+using FantasyStockTrader.Core.DatabaseContext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
@@ -32,6 +33,42 @@ namespace FantasyStockTrader.Web.Controllers
             return new BuySummary(currentPrice, maxShareAmount, accountWallet.Amount);
         }
 
+        [HttpPost("execute")]
+        public void Execute([FromBody] BuyTransaction buyTransaction)
+        {
+            var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
+
+            var currentPrice = 57.85;
+
+            // check if can purchase
+            if (buyTransaction.Amount * currentPrice > (double)accountWallet.Amount)
+            {
+                throw new Exception("Transaction would exceed available funds");
+            }
+
+            _dbContext.Transactions.Add(new Transaction
+            {
+                AccountId = _authContext.Account.Id,
+                Symbol = buyTransaction.Symbol,
+                Type = "BUY",
+                Amount = buyTransaction.Amount,
+                Price = currentPrice,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            // subtract from wallet
+            accountWallet.Amount -= (decimal)(buyTransaction.Amount * currentPrice);
+            _dbContext.Wallets.Update(accountWallet);
+
+            _dbContext.SaveChanges();
+        }
+
         public record BuySummary(double CurrentPrice, int MaxShareAmount, decimal walletAmount);
+
+        public record BuyTransaction
+        {
+            public string Symbol { get; set; }
+            public int Amount { get; set; }
+        };
     }
 }
