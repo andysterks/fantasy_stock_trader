@@ -44,7 +44,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-//app.UseMiddleware<TokenMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
@@ -57,35 +56,3 @@ app.MapControllerRoute(
 app.MapFallbackToFile("index.html");
 
 app.Run();
-
-public class TokenMiddleware
-{
-    private readonly RequestDelegate _next;
-    private readonly IAuthTokenCreationService _authTokenCreationService;
-    private readonly IAuthCookieService _authCookieService;
-
-    public TokenMiddleware(RequestDelegate next, 
-        IAuthTokenCreationService authTokenCreationService, 
-        IAuthCookieService authCookieService)
-    {
-        _next = next;
-        _authTokenCreationService = authTokenCreationService;
-        _authCookieService = authCookieService;
-    }
-
-    public async Task Invoke(HttpContext context)
-    {
-        var accessTokenCookie = context.Request.Cookies["fst-access-id"];
-        if (accessTokenCookie == null)
-        {
-            var refreshTokenCookie = context.Request.Cookies["fst-refresh-id"];
-            if (refreshTokenCookie != null)
-            {
-                
-            }
-        }
-        await _next(context);
-
-
-    }
-}
