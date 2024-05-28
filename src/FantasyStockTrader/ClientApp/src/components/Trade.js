@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../common/AuthInterceptor";
 import { useNavigate } from "react-router-dom";
 
 function Trade() {
