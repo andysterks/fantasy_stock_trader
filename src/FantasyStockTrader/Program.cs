@@ -1,10 +1,8 @@
 using FantasyStockTrader.Core.DatabaseContext;
-using FantasyStockTrader.Core.Exceptions;
+using FantasyStockTrader.Integration;
 using FantasyStockTrader.Web;
 using FantasyStockTrader.Web.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +27,7 @@ builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
 builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRefreshTokenRenewalService, RefreshTokenRenewalService>();
+builder.Services.AddScoped<IFinnhubApiService, FinnhubApiService>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

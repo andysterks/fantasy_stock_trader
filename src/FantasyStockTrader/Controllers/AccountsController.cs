@@ -1,5 +1,6 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Integration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers;
@@ -10,12 +11,15 @@ public class AccountsController : ControllerBase
 {
     private readonly FantasyStockTraderContext _dbContext;
     private readonly IAuthContext _authContext;
+    private readonly IFinnhubApiService _finnhubApiService;
 
     public AccountsController(FantasyStockTraderContext dbContext, 
-        IAuthContext authContext)
+        IAuthContext authContext, 
+        IFinnhubApiService finnhubApiService)
     {
         _dbContext = dbContext;
         _authContext = authContext;
+        _finnhubApiService = finnhubApiService;
     }
 
     [HttpPost]
@@ -33,8 +37,16 @@ public class AccountsController : ControllerBase
 
         var holdings = _dbContext.Holdings
             .Where(x => x.AccountId == _authContext.Account.Id)
-            .Select(x => new HoldingsModel(x.Symbol, x.Shares, x.CostBasis, x.Shares * 50, x.Shares * 50 - x.CostBasis))
-        .ToList();
+            .Select(x => new HoldingsModel
+            {
+                Symbol = x.Symbol,
+                SharesAmount = x.Shares,
+                CostBasis = x.CostBasis,
+                Value = (double)(_finnhubApiService.GetPrice(x.Symbol).Result.CurrentPrice * x.Shares)
+            })
+            //.Select(x => new HoldingsModel(x.Symbol, x.Shares, x.CostBasis, x.Shares * stockQuote.CurrentPrice, x.Shares * stockQuote.CurrentPrice - x.CostBasis))
+            .ToList();
+        
 
         var accountValue = holdings.Sum(x => x.Value);
         var accountCostBasis = holdings.Sum(x => x.CostBasis);
@@ -65,10 +77,11 @@ public record AccountSummaryModel(
     double AccountPerformance
     );
 
-public record HoldingsModel(
-    string Symbol,
-    int SharesAmount,
-    double CostBasis,
-    double Value,
-    double Performance
-    );
+public record HoldingsModel
+{
+    public string Symbol { get; set; }
+    public int SharesAmount { get; set; }
+    public double CostBasis { get; set; }
+    public double Value { get; set; }
+    public double Performance => Value - CostBasis;
+}

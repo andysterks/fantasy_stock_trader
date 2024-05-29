@@ -1,5 +1,6 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
+using FantasyStockTrader.Integration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,22 +14,26 @@ namespace FantasyStockTrader.Web.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly FantasyStockTraderContext _dbContext;
         private readonly IAuthContext _authContext;
+        private readonly IFinnhubApiService _finnhubApiService;
 
         public BuyController(IHttpClientFactory httpClientFactory, 
             FantasyStockTraderContext dbContext, 
-            IAuthContext authContext)
+            IAuthContext authContext, 
+            IFinnhubApiService finnhubApiService)
         {
             _httpClientFactory = httpClientFactory;
             _dbContext = dbContext;
             _authContext = authContext;
+            _finnhubApiService = finnhubApiService;
         }
 
         [HttpGet("summary")]
-        public BuySummary GetBuySummary([FromQuery] string symbol)
+        public async Task<BuySummary> GetBuySummary([FromQuery] string symbol)
         {
             var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
 
-            var currentPrice = 57.85;
+            var stockQuote = await _finnhubApiService.GetPrice(symbol);
+            var currentPrice = stockQuote.CurrentPrice;
 
             var maxShareAmount = (int)Math.Floor((double)accountWallet.Amount / currentPrice); 
 
@@ -36,11 +41,12 @@ namespace FantasyStockTrader.Web.Controllers
         }
 
         [HttpPost("execute")]
-        public void Execute([FromBody] BuyTransaction buyTransaction)
+        public async Task Execute([FromBody] BuyTransaction buyTransaction)
         {
             var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
 
-            var currentPrice = 57.85;
+            var stockQuote = await _finnhubApiService.GetPrice(buyTransaction.Symbol);
+            var currentPrice = stockQuote.CurrentPrice;
 
             // check if can purchase
             if (buyTransaction.Amount * currentPrice > (double)accountWallet.Amount)
