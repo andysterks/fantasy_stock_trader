@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Microsoft.Extensions.Logging;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
@@ -35,6 +36,7 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.Entity<Session>()
             .HasOne(s => s.Account)
             .WithMany()
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
 
         modelBuilder.ConfigureAccount();
@@ -50,9 +52,12 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(
-            "Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd",
-            optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"));
+        optionsBuilder.UseSqlite("Data Source=../../fantasy_stock_trader.db;foreign keys=true;")
+            .LogTo(Console.WriteLine, LogLevel.Trace);
+
+        //optionsBuilder.UseNpgsql(
+        //    "Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd",
+        //    optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 
     public DbSet<Account> Accounts { get; set; }

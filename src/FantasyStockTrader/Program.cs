@@ -12,9 +12,18 @@ builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
 
+//builder.Services.AddDbContext<FantasyStockTraderContext>(
+//    options => options.UseNpgsql(connectionString,
+//        optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
+
 builder.Services.AddDbContext<FantasyStockTraderContext>(
-    options => options.UseNpgsql(connectionString,
-        optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
+    options => options.UseSqlite(connectionString,
+        optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"))
+        .UseLoggerFactory(LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Trace);
+        })));
 
 builder.Services.AddAuthentication("FSTScheme")
     .AddScheme<CookieAuthenticationOptions, CookieAuthenticationHandler>("FSTScheme", null);

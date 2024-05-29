@@ -11,5 +11,6 @@
         public DateTime? DeletedAt { get; set; }
         
         public IList<Holding> Holdings { get; set; }
+
     }
 }

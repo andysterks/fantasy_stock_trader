@@ -31,7 +31,7 @@ public class LoginService : ILoginService
     public void Login(string emailAddress, string password)
     {
         // TODO: replace with db check
-        var matchingUser = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == emailAddress);
+        var matchingUser = _dbContext.Accounts.First(x => x.EmailAddress == emailAddress);
         if (matchingUser is null || matchingUser.Password != password)
             throw new FSTAuthorizationException("Email/password combination is not correct.");
 
