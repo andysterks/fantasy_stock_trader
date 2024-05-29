@@ -28,6 +28,11 @@ builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>(
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRefreshTokenRenewalService, RefreshTokenRenewalService>();
 builder.Services.AddScoped<IFinnhubApiService, FinnhubApiService>();
+builder.Services.AddScoped<IHoldingsUpdateService, HoldingsUpdateService>();
+builder.Services.AddScoped<IWalletUpdateService, WalletUpdateService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IBuyStockService, BuyStockService>();
+builder.Services.AddScoped<IBuySummaryService, BuySummaryService>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
