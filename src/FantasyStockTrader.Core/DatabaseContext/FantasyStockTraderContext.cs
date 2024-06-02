@@ -52,7 +52,7 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=../../fantasy_stock_trader.db;foreign keys=true;")
+        optionsBuilder.UseSqlite(@"Data Source=C:\Users\andys\Documents\Dev Projects\fantasy_stock_trader\src\FantasyStockTrader.Core\AppData\fantasy_stock_trader.db;foreign keys=true;")
             .LogTo(Console.WriteLine, LogLevel.Trace);
 
         //optionsBuilder.UseNpgsql(
