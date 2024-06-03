@@ -62,7 +62,7 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"),
+        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"), 
             o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 

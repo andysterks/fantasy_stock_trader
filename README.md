@@ -22,7 +22,7 @@ Sign up for account and start trading [here](https://github.com/andysterks)
 ## Summary
 
 Migrations command: dotnet ef migrations add MigrationNameHere
-DB-Update Command: dotnet ef database update --connection 'Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd' --verbose
+DB-Update Command: dotnet ef database update --connection 'connstring' --verbose
 
 ## Author
 
