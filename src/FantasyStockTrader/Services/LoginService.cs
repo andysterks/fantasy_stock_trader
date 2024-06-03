@@ -7,7 +7,7 @@ namespace FantasyStockTrader.Web.Services;
 
 public interface ILoginService
 {
-    void Login(string emailAddress, string password);
+    Account Login(string emailAddress, string password);
 }
 
 public class LoginService : ILoginService
@@ -28,7 +28,7 @@ public class LoginService : ILoginService
         _configuration = configuration;
     }
 
-    public void Login(string emailAddress, string password)
+    public Account Login(string emailAddress, string password)
     {
         // TODO: replace with db check
         var matchingUser = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == emailAddress);
@@ -51,6 +51,8 @@ public class LoginService : ILoginService
 
         _authCookieService.SetAccessTokenCookie(accessToken);
         _authCookieService.SetRefreshTokenCookie(session);
+
+        return matchingUser;
     }
 
     private static string GenerateRefreshToken()

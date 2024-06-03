@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../common/AuthContext";
 
 function Login() {
   const [emailAddress, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { account, setAccount } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -12,7 +15,8 @@ function Login() {
     e.preventDefault();
 
     axios.post("api/auth", { emailAddress, password }).then((response) => {
-      console.log(response);
+      console.log(response.data);
+      setAccount(response.data);
       navigate("/dashboard");
     });
   };

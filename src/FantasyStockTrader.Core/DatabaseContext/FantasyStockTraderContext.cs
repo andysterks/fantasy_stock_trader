@@ -2,21 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Microsoft.Extensions.Configuration;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
 public class FantasyStockTraderContext : DbContext
 {
-    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options) : base(options)
+    private IConfiguration _configuration;
+
+    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options, IConfiguration configuration) : base(options)
     {
+        _configuration = configuration;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.UseSerialColumns();
-
         modelBuilder.Entity<Session>()
             .HasKey(s => s.Id);
+
+        modelBuilder.Entity<Session>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Session>()
             .HasIndex(s => s.RefreshToken)
@@ -42,6 +48,13 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.ConfigureWallet();
 
         modelBuilder.Entity<Holding>()
+            .HasKey(h => h.Id);
+
+        modelBuilder.Entity<Holding>()
+            .Property(h => h.Id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Holding>()
             .HasOne(h => h.Account)
             .WithMany(a => a.Holdings)
             .HasForeignKey(h => h.AccountId)
@@ -50,9 +63,8 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(
-            "Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd",
-            optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"));
+        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"), 
+            o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 
     public DbSet<Account> Accounts { get; set; }

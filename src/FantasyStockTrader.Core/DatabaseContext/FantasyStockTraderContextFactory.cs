@@ -6,17 +6,21 @@ namespace FantasyStockTrader.Core.DatabaseContext
 {
     public class FantasyStockTraderContextFactory : IDesignTimeDbContextFactory<FantasyStockTraderContext>
     {
-        public FantasyStockTraderContextFactory()
+        private readonly IConfiguration _configuration;
+
+        public FantasyStockTraderContextFactory(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
         public FantasyStockTraderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<FantasyStockTraderContext>();
-            optionsBuilder.UseNpgsql(x => x.MigrationsAssembly("FantasyStockTrader.Core"));
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"),
+                o => o.MigrationsAssembly("FantasyStockTrader.Core"));
             optionsBuilder.EnableSensitiveDataLogging();
 
-            return new FantasyStockTraderContext(optionsBuilder.Options);
+            return new FantasyStockTraderContext(optionsBuilder.Options, _configuration);
         }
     }
 }

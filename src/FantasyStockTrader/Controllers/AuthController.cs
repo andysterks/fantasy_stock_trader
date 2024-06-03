@@ -18,13 +18,20 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public void Post([FromBody] LoginModel loginModel)
+    public AccountModel Post([FromBody] LoginModel loginModel)
     {
         if (loginModel.EmailAddress == null || loginModel.Password == null)
             // TODO: Create custom exception for invalid incoming params
             throw new Exception();
 
-        _loginService.Login(loginModel.EmailAddress, loginModel.Password);
+        var user = _loginService.Login(loginModel.EmailAddress, loginModel.Password);
+
+        return new AccountModel
+        {
+            Id = user.Id,
+            EmailAddress = user.EmailAddress,
+            FirstName = user.FirstName
+        };
     }
 
     [HttpPost]
@@ -40,5 +47,12 @@ public class AuthController : ControllerBase
     {
         public string EmailAddress { get; set; }
         public string Password { get; set; }
+    }
+
+    public class AccountModel
+    {
+        public Guid Id { get; set; }
+        public string EmailAddress { get; set; }
+        public string FirstName { get; set; }
     }
 }

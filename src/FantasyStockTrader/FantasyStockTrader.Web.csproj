@@ -33,6 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="appsettings.json" />
+    <_ContentIncludedByDefault Remove="appsettings.Production.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FantasyStockTrader.Core\FantasyStockTrader.Core.csproj" />
     <ProjectReference Include="..\FantasyStockTrader.Integration\FantasyStockTrader.Integration.csproj" />
   </ItemGroup>

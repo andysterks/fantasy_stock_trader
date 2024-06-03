@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddApplicationInsightsTelemetry(o =>
+//{
+//    o.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+//});
+
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
@@ -13,7 +18,7 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
 
 builder.Services.AddDbContext<FantasyStockTraderContext>(
-    options => options.UseNpgsql(connectionString,
+    options => options.UseSqlServer(connectionString,
         optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 builder.Services.AddAuthentication("FSTScheme")
