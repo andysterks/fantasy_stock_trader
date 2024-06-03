@@ -1,8 +1,8 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace FantasyStockTrader.Web.Services;
 
@@ -42,14 +42,12 @@ public class LoginService : ILoginService
         int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
         var session = new Session
         {
-            Id = Guid.NewGuid(),
             Account = matchingUser,
             RefreshToken = refreshToken,
             ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenValidityInDays),
             CreatedAt = DateTime.UtcNow
         };
 
-        _dbContext.SaveChanges();
         _dbContext.Sessions.Add(session);
         _dbContext.SaveChanges();
 

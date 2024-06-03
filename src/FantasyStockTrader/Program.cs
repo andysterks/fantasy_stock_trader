@@ -19,11 +19,15 @@ var connectionString = builder.Configuration.GetConnectionString("FantasyStockTr
 builder.Services.AddDbContext<FantasyStockTraderContext>(
     options => options.UseSqlite(connectionString,
         optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"))
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors()
         .UseLoggerFactory(LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Trace);
         })));
+
+HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
 builder.Services.AddAuthentication("FSTScheme")
     .AddScheme<CookieAuthenticationOptions, CookieAuthenticationHandler>("FSTScheme", null);

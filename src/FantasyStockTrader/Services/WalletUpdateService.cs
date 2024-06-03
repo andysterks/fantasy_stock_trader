@@ -21,7 +21,7 @@ namespace FantasyStockTrader.Web.Services
 
         public void SubtractCurrency(decimal amount)
         {
-            var accountWallet = _dbContext.Wallets.First(x => x.AccountId == _authContext.Account.Id);
+            var accountWallet = _dbContext.Wallets.First(x => x.Account.Id == _authContext.Account.Id);
 
             accountWallet.Amount -= amount;
             _dbContext.Wallets.Update(accountWallet);

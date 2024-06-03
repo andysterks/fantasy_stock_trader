@@ -33,10 +33,10 @@ public class AccountsController : ControllerBase
     [HttpGet("summary")]
     public AccountSummaryModel GetSummary()
     {
-        var wallet = _dbContext.Wallets.First(x => x.AccountId == _authContext.Account.Id);
+        var wallet = _dbContext.Wallets.First(x => x.Account.Id == _authContext.Account.Id);
 
         var holdings = _dbContext.Holdings
-            .Where(x => x.AccountId == _authContext.Account.Id)
+            .Where(x => x.Account.Id == _authContext.Account.Id)
             .Select(x => new HoldingsModel
             {
                 Symbol = x.Symbol,

@@ -2,7 +2,7 @@
 {
     public class Session
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public Account Account { get; set; }
         public string RefreshToken { get; set; }
         public DateTime ExpiresAt { get; set; }

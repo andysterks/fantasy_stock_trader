@@ -10,6 +10,10 @@ namespace FantasyStockTrader.Core.Extensions
             modelBuilder.Entity<Account>()
                 .HasKey(a => a.Id);
 
+            modelBuilder.Entity<Session>()
+                .Property(a => a.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Account>()
                 .Property(a => a.EmailAddress)
                 .IsRequired()

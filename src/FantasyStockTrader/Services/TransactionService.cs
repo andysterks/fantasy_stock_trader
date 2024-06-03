@@ -24,7 +24,7 @@ namespace FantasyStockTrader.Web.Services
         {
             _dbContext.Transactions.Add(new Transaction
             {
-                AccountId = _authContext.Account.Id,
+                Account = _authContext.Account,
                 Symbol = symbol,
                 Type = "BUY",
                 Amount = shares,

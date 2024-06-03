@@ -2,8 +2,8 @@
 {
     public class Transaction
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public long Id { get; set; }
+        public Account Account { get; set; }
         public string Symbol { get; set; }
         public string Type { get; set; }
         public int Amount { get; set; }

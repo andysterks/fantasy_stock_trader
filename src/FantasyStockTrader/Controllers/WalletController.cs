@@ -23,7 +23,7 @@ namespace FantasyStockTrader.Web.Controllers
         [HttpGet]
         public Wallet Get()
         {
-            var wallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
+            var wallet = _dbContext.Wallets.FirstOrDefault(x => x.Account.Id == _authContext.Account.Id);
             return wallet;
         }
     }

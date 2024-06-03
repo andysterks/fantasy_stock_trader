@@ -1,8 +1,10 @@
 ﻿using FantasyStockTrader.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.Extensions.Logging;
+using System.Data.Common;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
@@ -18,6 +20,10 @@ public class FantasyStockTraderContext : DbContext
 
         modelBuilder.Entity<Session>()
             .HasKey(s => s.Id);
+
+        modelBuilder.Entity<Session>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Session>()
             .HasIndex(s => s.RefreshToken)
@@ -43,21 +49,36 @@ public class FantasyStockTraderContext : DbContext
 
         modelBuilder.ConfigureWallet();
 
+        modelBuilder.Entity<Transaction>()
+            .HasOne(h => h.Account)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+
         modelBuilder.Entity<Holding>()
             .HasOne(h => h.Account)
             .WithMany(a => a.Holdings)
-            .HasForeignKey(h => h.AccountId)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite(@"Data Source=C:\Users\andys\Documents\Dev Projects\fantasy_stock_trader\src\FantasyStockTrader.Core\AppData\fantasy_stock_trader.db;foreign keys=true;")
-            .LogTo(Console.WriteLine, LogLevel.Trace);
+        // Get the current working directory
+        string currentDirectory = Directory.GetCurrentDirectory();
 
-        //optionsBuilder.UseNpgsql(
-        //    "Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd",
-        //    optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"));
+        // Combine the current directory with the relative path to the database file
+        string databasePath = Path.Combine(currentDirectory, "AppData", "fantasy_stock_trader.db");
+
+        // Ensure the directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(databasePath));
+
+        // Configure the SQLite connection
+        optionsBuilder.UseSqlite($"Data Source=\"C:\\Users\\andys\\source\\sqlite_databases\\fantasy_stock_trader.db\";Pooling=False;Cache=Shared;")
+                        .AddInterceptors(new SqlCommandInterceptor())
+                      .LogTo(Console.WriteLine, LogLevel.Information)
+                      .EnableDetailedErrors()
+                      .EnableSensitiveDataLogging();
     }
 
     public DbSet<Account> Accounts { get; set; }
@@ -75,4 +96,13 @@ public class CreatedAtGenerator : ValueGenerator
     }
 
     public override bool GeneratesTemporaryValues { get; }
+}
+
+public class SqlCommandInterceptor : DbCommandInterceptor
+{
+    public override InterceptionResult<DbCommand> CommandCreating(CommandCorrelatedEventData eventData, InterceptionResult<DbCommand> result)
+    {
+        Console.WriteLine($"Command Text: {eventData.CommandId}");
+        return base.CommandCreating(eventData, result);
+    }
 }

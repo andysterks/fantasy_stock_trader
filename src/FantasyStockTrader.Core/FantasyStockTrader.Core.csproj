@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFrameworkProfiler.Appender" Version="6.0.6047" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.16">
       <PrivateAssets>all</PrivateAssets>
@@ -25,7 +26,7 @@
 
   <ItemGroup>
     <None Update="AppData\fantasy_stock_trader.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="AppData\fantasy_stock_trader.db-shm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

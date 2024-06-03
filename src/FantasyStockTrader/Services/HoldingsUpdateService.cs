@@ -5,7 +5,7 @@ namespace FantasyStockTrader.Web.Services
 {
     public interface IHoldingsUpdateService
     {
-        void UpdateWithBuy(Guid accountId, string symbol, int shares, double costBasis);
+        void UpdateWithBuy(long accountId, string symbol, int shares, double costBasis);
     }
 
     public class HoldingsUpdateService : IHoldingsUpdateService
@@ -17,7 +17,7 @@ namespace FantasyStockTrader.Web.Services
             _dbContext = dbContext;
         }
 
-        public void UpdateWithBuy(Guid accountId, string symbol, int shares, double costBasis) 
+        public void UpdateWithBuy(long accountId, string symbol, int shares, double costBasis) 
         {
             var holding = _dbContext.Holdings.FirstOrDefault(x => x.Symbol == symbol
                                                                   && x.Account.Id == accountId);
@@ -26,7 +26,7 @@ namespace FantasyStockTrader.Web.Services
             {
                 _dbContext.Holdings.Add(new Holding
                 {
-                    AccountId = accountId,
+                    //Account = account,
                     Symbol = symbol,
                     Shares = shares,
                     CostBasis = costBasis,

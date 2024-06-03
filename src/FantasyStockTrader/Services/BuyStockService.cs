@@ -35,7 +35,7 @@ namespace FantasyStockTrader.Web.Services
 
         public async Task BuyAsync(string symbol, int shares)
         {
-            var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
+            var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.Account.Id == _authContext.Account.Id);
 
             var quote = await _finnhubApiService.GetPrice(symbol);
             var costBasis = quote.CurrentPrice * shares;

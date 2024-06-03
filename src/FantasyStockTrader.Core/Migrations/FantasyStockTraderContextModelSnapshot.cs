@@ -22,9 +22,9 @@ namespace FantasyStockTrader.Core.Migrations
 
             modelBuilder.Entity("FantasyStockTrader.Core.Account", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -63,12 +63,12 @@ namespace FantasyStockTrader.Core.Migrations
 
             modelBuilder.Entity("FantasyStockTrader.Core.Holding", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("AccountId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("CostBasis")
                         .HasColumnType("REAL");
@@ -92,12 +92,12 @@ namespace FantasyStockTrader.Core.Migrations
 
             modelBuilder.Entity("FantasyStockTrader.Core.Session", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("AccountId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -122,12 +122,12 @@ namespace FantasyStockTrader.Core.Migrations
 
             modelBuilder.Entity("FantasyStockTrader.Core.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("AccountId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
@@ -148,17 +148,19 @@ namespace FantasyStockTrader.Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId");
+
                     b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("FantasyStockTrader.Core.Wallet", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("AccountId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
@@ -186,6 +188,17 @@ namespace FantasyStockTrader.Core.Migrations
                 });
 
             modelBuilder.Entity("FantasyStockTrader.Core.Session", b =>
+                {
+                    b.HasOne("FantasyStockTrader.Core.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("FantasyStockTrader.Core.Transaction", b =>
                 {
                     b.HasOne("FantasyStockTrader.Core.Account", "Account")
                         .WithMany()

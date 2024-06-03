@@ -2,8 +2,7 @@
 {
     public class Holding
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public long Id { get; set; }
         public Account Account { get; set; }
         public string Symbol { get; set; }
         public int Shares { get; set; }
