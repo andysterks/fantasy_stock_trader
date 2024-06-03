@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("FantasyStockTrader");
 
 builder.Services.AddDbContext<FantasyStockTraderContext>(
-    options => options.UseNpgsql(connectionString,
+    options => options.UseSqlServer(connectionString,
         optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core")));
 
 builder.Services.AddAuthentication("FSTScheme")

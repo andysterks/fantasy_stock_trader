@@ -13,10 +13,12 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.UseSerialColumns();
-
         modelBuilder.Entity<Session>()
             .HasKey(s => s.Id);
+
+        modelBuilder.Entity<Session>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Session>()
             .HasIndex(s => s.RefreshToken)
@@ -42,6 +44,13 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.ConfigureWallet();
 
         modelBuilder.Entity<Holding>()
+            .HasKey(h => h.Id);
+
+        modelBuilder.Entity<Holding>()
+            .Property(h => h.Id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Holding>()
             .HasOne(h => h.Account)
             .WithMany(a => a.Holdings)
             .HasForeignKey(h => h.AccountId)
@@ -50,9 +59,8 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(
-            "Server=localhost; Port=5432; Database=fantasy_stock_trader; User ID=postgres; Password=passw0rd",
-            optionsBuilder => optionsBuilder.MigrationsAssembly("FantasyStockTrader.Core"));
+        optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=fantasy_stock_trader;Trusted_Connection=True;TrustServerCertificate=True;", 
+            o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 
     public DbSet<Account> Accounts { get; set; }

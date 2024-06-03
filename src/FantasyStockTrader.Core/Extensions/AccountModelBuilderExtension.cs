@@ -11,6 +11,10 @@ namespace FantasyStockTrader.Core.Extensions
                 .HasKey(a => a.Id);
 
             modelBuilder.Entity<Account>()
+                .Property(a => a.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Account>()
                 .Property(a => a.EmailAddress)
                 .IsRequired()
                 .HasMaxLength(100);

@@ -1,4 +1,6 @@
-﻿namespace FantasyStockTrader.Core
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace FantasyStockTrader.Core
 {
     public class Wallet
     {

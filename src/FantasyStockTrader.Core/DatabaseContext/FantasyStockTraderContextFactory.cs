@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 
 namespace FantasyStockTrader.Core.DatabaseContext
 {
@@ -13,7 +12,8 @@ namespace FantasyStockTrader.Core.DatabaseContext
         public FantasyStockTraderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<FantasyStockTraderContext>();
-            optionsBuilder.UseNpgsql(x => x.MigrationsAssembly("FantasyStockTrader.Core"));
+            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=fantasy_stock_trader;Trusted_Connection=True;TrustServerCertificate=True;",
+                o => o.MigrationsAssembly("FantasyStockTrader.Core"));
             optionsBuilder.EnableSensitiveDataLogging();
 
             return new FantasyStockTraderContext(optionsBuilder.Options);
