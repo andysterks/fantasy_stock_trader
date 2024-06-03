@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../common/AuthContext";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { setAccount } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Login = () => {
     setError(""); // Clear previous error
 
     try {
-      const response = await axios.post("/api/login", { email, password });
+      const response = await axios.post("/api/auth", { emailAddress, password });
       setAccount(response.data);
       navigate("/dashboard");
     } catch (error) {
@@ -30,9 +30,9 @@ const Login = () => {
         <input
           type="email"
           id="email"
-          value={email}
+          value={emailAddress}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setEmailAddress(e.target.value);
             setError(""); // Clear the error when the input changes
           }}
         />

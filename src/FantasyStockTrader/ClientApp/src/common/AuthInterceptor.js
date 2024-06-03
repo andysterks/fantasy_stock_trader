@@ -5,12 +5,7 @@ axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    debugger;
-    if (
-      error.response.status === 401 &&
-      originalRequest?.url !== "api/auth" &&
-      !originalRequest._retry
-    ) {
+    if (error.response.status === 401 && !originalRequest?.url == 'api/auth' && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const response = await axios.post("/api/auth/refresh-token");

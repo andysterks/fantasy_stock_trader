@@ -40,6 +40,11 @@ builder.Services.AddScoped<IBuyStockService, BuyStockService>();
 builder.Services.AddScoped<IBuySummaryService, BuySummaryService>();
 builder.Services.AddHttpClient();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
+builder.Services.AddScoped<IAuthTokenCreationService, AuthTokenCreationService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
