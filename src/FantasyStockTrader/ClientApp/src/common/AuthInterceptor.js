@@ -5,19 +5,22 @@ axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest?.url == 'api/auth' && !originalRequest._retry) {
+    debugger;
+    if (
+      error.response.status === 401 &&
+      originalRequest?.url !== "api/auth" &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
-        const response = await axios.post(
-          "/api/auth/refresh-token"
-        );
+        const response = await axios.post("/api/auth/refresh-token");
         return axios(originalRequest);
       } catch (err) {
         console.error("Failed to refresh token:", err);
         // Handle the error, e.g., redirect to the login page
-        console.error("TODO: REDIRECT TO LOGIN PAGE")
+        console.error("TODO: REDIRECT TO LOGIN PAGE");
         if (globalRouter.navigate) {
-            globalRouter.navigate("/")
+          globalRouter.navigate("/");
         }
         return Promise.reject(err);
       }
