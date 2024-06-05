@@ -1,22 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace FantasyStockTrader.Core.DatabaseContext
 {
     public class FantasyStockTraderContextFactory : IDesignTimeDbContextFactory<FantasyStockTraderContext>
     {
-        public FantasyStockTraderContextFactory()
+        private readonly IConfiguration _configuration;
+
+        public FantasyStockTraderContextFactory(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
         public FantasyStockTraderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<FantasyStockTraderContext>();
-            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=fantasy_stock_trader;Trusted_Connection=True;TrustServerCertificate=True;",
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"),
                 o => o.MigrationsAssembly("FantasyStockTrader.Core"));
             optionsBuilder.EnableSensitiveDataLogging();
 
-            return new FantasyStockTraderContext(optionsBuilder.Options);
+            return new FantasyStockTraderContext(optionsBuilder.Options, _configuration);
         }
     }
 }

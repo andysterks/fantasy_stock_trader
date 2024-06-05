@@ -2,13 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Microsoft.Extensions.Configuration;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
 public class FantasyStockTraderContext : DbContext
 {
-    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options) : base(options)
+    private IConfiguration _configuration;
+
+    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options, IConfiguration configuration) : base(options)
     {
+        _configuration = configuration;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,7 +63,7 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=fantasy_stock_trader;Trusted_Connection=True;TrustServerCertificate=True;", 
+        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"), 
             o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 

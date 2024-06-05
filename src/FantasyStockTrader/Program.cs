@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplicationInsightsTelemetry(o =>
-{
-    o.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
-});
+//builder.Services.AddApplicationInsightsTelemetry(o =>
+//{
+//    o.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+//});
 
 // Add services to the container.
 
