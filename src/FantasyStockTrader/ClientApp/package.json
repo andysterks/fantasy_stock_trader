@@ -31,7 +31,13 @@
     "workbox-streams": "^6.5.4"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
     "ajv": "^8.12.0",
+    "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.39.0",
     "eslint-config-react-app": "^7.0.1",
@@ -39,6 +45,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
+    "jest": "^27.5.1",
     "nan": "^2.17.0",
     "typescript": "^4.9.5"
   },
@@ -51,7 +58,7 @@
     "prestart": "node aspnetcore-https && node aspnetcore-react",
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/"
   },
