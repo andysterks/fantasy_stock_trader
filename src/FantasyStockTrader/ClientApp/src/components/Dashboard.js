@@ -2,20 +2,39 @@ import React, { useEffect, useState } from "react";
 import axios from "../common/AuthInterceptor";
 
 function Dashboard() {
-  const [accountSummary, setAccountSummary] = useState([]);
+  const [accountSummary, setAccountSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
       .get("api/accounts/summary")
-      .then((response) => setAccountSummary(response.data));
+      .then((response) => {
+        setAccountSummary(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching account summary:", error);
+        setLoading(false);
+      });
   }, []);
-
-  console.log(accountSummary);
 
   const formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
+
+  if (loading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
