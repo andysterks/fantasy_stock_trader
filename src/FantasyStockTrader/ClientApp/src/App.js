@@ -20,7 +20,7 @@ const App = () => {
           {AppRoutes.map((route, index) => {
             const { element, ...rest } = route;
             return route.index ? (
-              <Route exact {...rest} element={element} />
+              <Route key={index} exact {...rest} element={element} />
             ) : (
               <Route key={index} {...rest} element={<ForwardingRoute />}>
                 <Route exact {...rest} element={element} />

@@ -26,7 +26,7 @@ const AppRoutes = [
     element: <Login />,
   },
   {
-    path: "/sign-up",
+    path: "/register",
     element: <RegisterUser />,
   },
 ];

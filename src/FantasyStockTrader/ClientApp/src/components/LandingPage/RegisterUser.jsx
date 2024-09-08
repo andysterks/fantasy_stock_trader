@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterUser() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ function RegisterUser() {
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +22,7 @@ function RegisterUser() {
     e.preventDefault();
     // Handle form submission here (e.g., API call to register user)
     console.log('Form submitted:', formData);
+    navigate("/login");
   };
 
   return (
