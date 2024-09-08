@@ -59,7 +59,7 @@
     "build:css": "tailwindcss -i ./src/index.css -o ./src/output.css --minify",
     "watch:css": "tailwindcss -i ./src/index.css -o ./src/output.css --watch",
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "start": "rimraf ./build && npm run watch:css & react-scripts start",
+    "start": "rimraf ./build && concurrently \"npm run watch:css\" \"react-scripts start\"",
     "build": "npm run build:css &&react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
