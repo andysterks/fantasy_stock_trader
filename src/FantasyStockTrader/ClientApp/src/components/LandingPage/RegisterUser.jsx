@@ -38,6 +38,8 @@ function RegisterUser() {
             value={formData.firstName}
             onChange={handleChange}
             required
+            className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
+            placeholder="Enter your first name"
           />
         </div>
         <div>
