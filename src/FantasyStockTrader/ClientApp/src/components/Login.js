@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../common/AuthContext";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [emailAddress, setEmailAddress] = useState("");
@@ -54,6 +55,7 @@ const Login = () => {
       </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
       <button type="submit">Login</button>
+      <p>Don't have an account? <Link to="/register">Register</Link></p>
     </form>
   );
 };
