@@ -3,6 +3,7 @@ import Dashboard from "./components/Dashboard";
 import { FetchData } from "./components/FetchData";
 import Login from "./components/Login";
 import Trade from "./components/Trade";
+import RegisterUser from "./components/LandingPage/RegisterUser";
 
 const AppRoutes = [
   {
@@ -24,6 +25,10 @@ const AppRoutes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/sign-up",
+    element: <RegisterUser />,
   },
 ];
 
