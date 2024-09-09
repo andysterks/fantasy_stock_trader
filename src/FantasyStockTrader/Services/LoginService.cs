@@ -35,7 +35,7 @@ public class LoginService : ILoginService
     {
         // TODO: replace with db check
         var matchingUser = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == emailAddress);
-        if (matchingUser is null || matchingUser.Password != password)
+        if (matchingUser is null || !BCrypt.Net.BCrypt.Verify(password, matchingUser.Password))
             throw new FTSAuthorizationException("Email/password combination is not correct.");
 
         var accessToken = _authTokenCreationService.CreateToken(emailAddress);

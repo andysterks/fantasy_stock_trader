@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 import { AuthContext } from '../common/AuthContext';
 
@@ -7,11 +6,11 @@ export const Layout = ({ children }) => {
   const { account } = useContext(AuthContext);
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {account && <NavMenu />}
-      <Container tag="main">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow">
         {children}
-      </Container>
+      </main>
     </div>
   );
 };

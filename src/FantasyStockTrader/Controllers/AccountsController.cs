@@ -1,6 +1,7 @@
 ﻿using FantasyStockTrader.Core;
 using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Integration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers;
@@ -20,14 +21,6 @@ public class AccountsController : ControllerBase
         _dbContext = dbContext;
         _authContext = authContext;
         _finnhubApiService = finnhubApiService;
-    }
-
-    [HttpPost]
-    public IActionResult Post([FromBody] AccountInputModel accountInputModel)
-    {
-        var accounts = _dbContext.Accounts.ToList();
-
-        return Ok();
     }
 
     [HttpGet("summary")]

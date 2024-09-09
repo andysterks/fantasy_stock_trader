@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using FantasyStockTrader.Core.DatabaseContext;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -29,6 +30,12 @@ namespace FantasyStockTrader.Web
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            // respect the allowanonymous attribute on the controller
+            if (Context.GetEndpoint()?.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
+            {
+                return Task.FromResult(AuthenticateResult.NoResult());
+            }
+
             if (!Request.Cookies.ContainsKey("fst-access-id"))
             {
                 return Task.FromResult(AuthenticateResult.Fail("Unauthorized"));

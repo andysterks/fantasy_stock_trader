@@ -1,44 +1,40 @@
-import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './NavMenu.css';
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+export function NavMenu() {
+  const [isOpen, setIsOpen] = useState(false);
 
-  constructor (props) {
-    super(props);
+  const toggleNavbar = () => {
+    setIsOpen(!isOpen);
+  };
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
-
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
-
-  render() {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-          <NavbarBrand tag={Link} to="/">FantasyStockTrader</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/dashboard">Dashboard</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/trade">Trade</NavLink>
-              </NavItem>
-            </ul>
-          </Collapse>
-        </Navbar>
-      </header>
-    );
-  }
+  return (
+    <header className="bg-white shadow-md">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-3">
+          <Link to="/" className="text-xl font-bold text-gray-800">FantasyStockTrader</Link>
+          <div className="sm:hidden">
+            <button
+              onClick={toggleNavbar}
+              className="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+              aria-label="Toggle menu"
+            >
+              <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+                <path
+                  fillRule="evenodd"
+                  d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className={`sm:flex ${isOpen ? 'block' : 'hidden'}`}>
+            <div className="px-2 pt-2 pb-4 sm:flex sm:p-0">
+              <Link to="/dashboard" className="block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2">Dashboard</Link>
+              <Link to="/trade" className="mt-1 block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2">Trade</Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
 }
