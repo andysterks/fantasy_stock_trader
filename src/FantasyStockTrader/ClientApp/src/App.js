@@ -19,13 +19,7 @@ const App = () => {
         <Routes>
           {AppRoutes.map((route, index) => {
             const { element, ...rest } = route;
-            return route.index ? (
-              <Route key={index} exact {...rest} element={element} />
-            ) : (
-              <Route key={index} {...rest} element={<ForwardingRoute />}>
-                <Route exact {...rest} element={element} />
-              </Route>
-            );
+            return <Route key={index} exact {...rest} element={element} />;
           })}
           {ProtectedRoutes.map((route, index) => {
             const { element, ...rest } = route;
