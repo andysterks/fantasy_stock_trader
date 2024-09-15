@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BuyController : ControllerBase
