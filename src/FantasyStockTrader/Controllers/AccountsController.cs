@@ -24,7 +24,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("summary")]
-    public AccountSummaryModel GetSummary()
+    public AccountSummaryModel GetSummary([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
     {
         var wallet = _dbContext.Wallets.First(x => x.AccountId == _authContext.Account.Id);
 
@@ -37,20 +37,30 @@ public class AccountsController : ControllerBase
                 CostBasis = x.CostBasis,
                 Value = (double)(_finnhubApiService.GetPrice(x.Symbol).Result.CurrentPrice * x.Shares)
             })
-            //.Select(x => new HoldingsModel(x.Symbol, x.Shares, x.CostBasis, x.Shares * stockQuote.CurrentPrice, x.Shares * stockQuote.CurrentPrice - x.CostBasis))
+            .OrderByDescending(x => x.Value)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
 
+        var totalHoldings = _dbContext.Holdings.Count(x => x.AccountId == _authContext.Account.Id);
+        var totalPages = (int)Math.Ceiling((double)totalHoldings / pageSize);
 
-        var accountValue = holdings.Sum(x => x.Value);
-        var accountCostBasis = holdings.Sum(x => x.CostBasis);
+        var accountValue = _dbContext.Holdings
+            .Where(x => x.AccountId == _authContext.Account.Id)
+            .Sum(x => (double)(_finnhubApiService.GetPrice(x.Symbol).Result.CurrentPrice * x.Shares));
+        var accountCostBasis = _dbContext.Holdings
+            .Where(x => x.AccountId == _authContext.Account.Id)
+            .Sum(x => x.CostBasis);
 
         return new AccountSummaryModel(
             (double)wallet.Amount,
             holdings,
             accountValue,
             accountCostBasis,
-            accountValue - accountCostBasis
-            );
+            accountValue - accountCostBasis,
+            page,
+            totalPages
+        );
     }
 }
 
@@ -67,8 +77,10 @@ public record AccountSummaryModel(
     List<HoldingsModel> Holdings,
     double AccountValue,
     double AccountCostBasis,
-    double AccountPerformance
-    );
+    double AccountPerformance,
+    int CurrentPage,
+    int TotalPages
+);
 
 public record HoldingsModel
 {
