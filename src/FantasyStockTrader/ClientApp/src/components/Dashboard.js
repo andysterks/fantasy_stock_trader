@@ -24,9 +24,13 @@ function Dashboard() {
   });
 
   const renderHoldingsRows = () => {
-    if (!accountSummary?.holdings) { return <tr>
-      <td colSpan="4" className="text-left px-4 py-2">No holdings found</td>
-    </tr> }
+    if (accountSummary?.holdings.length === 0) { 
+      return (
+        <tr>
+          <td colSpan="4" className="text-left px-4 py-2">No holdings found</td>
+        </tr>
+      );
+    }
 
     return (
       accountSummary?.holdings?.map((h, i) => (
