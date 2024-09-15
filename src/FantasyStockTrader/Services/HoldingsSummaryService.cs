@@ -28,7 +28,7 @@ namespace FantasyStockTrader.Web.Services
                 .Where(x => x.AccountId == accountId)
                 .ToList();
 
-            return holdings.Sum(x => (double)(_finnhubApiService.GetPriceAsync(x.Symbol).Result.CurrentPrice * x.Shares));
+            return holdings.Sum(x => (double)(_finnhubApiService.GetPriceAsync(x.Symbol, accountId).Result.CurrentPrice * x.Shares));
             
         }
 

@@ -12,8 +12,8 @@ namespace FantasyStockTrader.Core.Extensions
 
             modelBuilder.Entity<ExternalApiCall>()
                 .HasOne(ac => ac.Account)
-                .WithOne()
-                .HasForeignKey<ExternalApiCall>(ac => ac.AccountId)
+                .WithMany()
+                .HasForeignKey(ac => ac.AccountId)
                 .IsRequired();
 
             modelBuilder.Entity<ExternalApiCall>()

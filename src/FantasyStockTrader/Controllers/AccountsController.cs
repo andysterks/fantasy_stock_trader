@@ -38,7 +38,7 @@ public class AccountsController : ControllerBase
                 Symbol = x.Symbol,
                 SharesAmount = x.Shares,
                 CostBasis = x.CostBasis,
-                Value = (_finnhubApiService.GetPriceAsync(x.Symbol).Result.CurrentPrice *
+                Value = (_finnhubApiService.GetPriceAsync(x.Symbol, _authContext.Account.Id).Result.CurrentPrice *
                 x.Shares)
             })
             .OrderByDescending(x => x.Value).ToList()

@@ -9,7 +9,7 @@ namespace FantasyStockTrader.Integration
 {
     public interface IFinnhubApiService
     {
-        Task<FinnhubQuote> GetPriceAsync(string symbol);
+        Task<FinnhubQuote> GetPriceAsync(string symbol, Guid accountId);
     }
 
     public class FinnhubApiService : IFinnhubApiService
@@ -33,20 +33,21 @@ namespace FantasyStockTrader.Integration
             _dbContext = dbContext;
         }
 
-        public async Task<FinnhubQuote> GetPriceAsync(string symbol)
+        public async Task<FinnhubQuote> GetPriceAsync(string symbol, Guid accountId)
         {
-            var endpoint = $"/api/v1/quote?symbol={symbol}&token={_configuration["Finnhub: Token"]}";
+            var endpoint = $"/api/v1/quote?symbol={symbol}&token={_configuration["Finnhub:Token"]}";
             var apiUrl = $"{BaseUrl}{endpoint}";
 
             if (_memoryCache.TryGetValue($"stock_price_{symbol}", out FinnhubQuote cachedQuote))
             {
                 _dbContext.ExternalApiCalls.Add(new ExternalApiCall
                 {
-                    AccountId = Guid.NewGuid(),
+                    AccountId = accountId,
                     ApiName = ApiName,
                     Endpoint = endpoint,
                     IsCached = true
                 });
+                await _dbContext.SaveChangesAsync();
                 return cachedQuote;
             }
 
@@ -56,11 +57,13 @@ namespace FantasyStockTrader.Integration
 
             _dbContext.ExternalApiCalls.Add(new ExternalApiCall
             {
-                AccountId = Guid.NewGuid(),
+                AccountId = accountId,
                 ApiName = ApiName,
                 Endpoint = endpoint,
                 IsCached = false
             });
+            await _dbContext.SaveChangesAsync();
+
 
             var response = await client.GetAsync(endpoint);
 

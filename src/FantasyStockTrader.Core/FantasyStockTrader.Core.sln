@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyStockTrader.Core", "FantasyStockTrader.Core.csproj", "{3D485495-3FF2-4B04-A2C8-254B9359D12A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D485495-3FF2-4B04-A2C8-254B9359D12A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D485495-3FF2-4B04-A2C8-254B9359D12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D485495-3FF2-4B04-A2C8-254B9359D12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D485495-3FF2-4B04-A2C8-254B9359D12A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49CACF76-2C51-4D49-9CB0-2F7F777642EB}
+	EndGlobalSection
+EndGlobal

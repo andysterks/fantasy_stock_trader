@@ -37,7 +37,7 @@ namespace FantasyStockTrader.Web.Services
         {
             var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
 
-            var quote = await _finnhubApiService.GetPriceAsync(symbol);
+            var quote = await _finnhubApiService.GetPriceAsync(symbol, _authContext.Account.Id);
             var costBasis = quote.CurrentPrice * shares;
 
             if (costBasis > (double)accountWallet.Amount)

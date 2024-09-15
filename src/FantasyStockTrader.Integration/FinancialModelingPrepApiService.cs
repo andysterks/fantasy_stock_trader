@@ -51,6 +51,7 @@ namespace FantasyStockTrader.Integration
                     Endpoint = endpoint,
                     IsCached = true
                 });
+                await _dbContext.SaveChangesAsync();
                 return companies;
             }
 
@@ -65,6 +66,7 @@ namespace FantasyStockTrader.Integration
                 Endpoint = endpoint,
                 IsCached = false
             });
+            await _dbContext.SaveChangesAsync();
             var response = await client.GetAsync(endpoint);
 
             if (!response.IsSuccessStatusCode)
