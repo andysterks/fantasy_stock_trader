@@ -10,18 +10,6 @@ const AppRoutes = [
     element: <Login />,
   },
   {
-    path: "/dashboard",
-    element: <Dashboard />,
-  },
-  {
-    path: "/trade",
-    element: <Trade />,
-  },
-  {
-    path: "/counter",
-    element: <Counter />,
-  },
-  {
     path: "/login",
     element: <Login />,
   },
