@@ -1,40 +1,77 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FantasyStockTrader.Core;
+using FantasyStockTrader.Core.DatabaseContext;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FantasyStockTrader.Integration
 {
     public interface IFinnhubApiService
     {
-        Task<FinnhubQuote> GetPrice(string symbol);
+        Task<FinnhubQuote> GetPriceAsync(string symbol);
     }
 
     public class FinnhubApiService : IFinnhubApiService
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _memoryCache;
+        private readonly FantasyStockTraderContext _dbContext;
+
+        private const string BaseUrl = "https://finnhub.io";
+        private const string ApiName = "Finnhub";
 
         public FinnhubApiService(IHttpClientFactory httpClientFactory, 
-            IConfiguration configuration)
+            IConfiguration configuration, 
+            IMemoryCache memoryCache, 
+            FantasyStockTraderContext dbContext)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _memoryCache = memoryCache;
+            _dbContext = dbContext;
         }
 
-        public async Task<FinnhubQuote> GetPrice(string symbol)
+        public async Task<FinnhubQuote> GetPriceAsync(string symbol)
         {
+            var endpoint = $"/api/v1/quote?symbol={symbol}&token={_configuration["Finnhub: Token"]}";
+            var apiUrl = $"{BaseUrl}{endpoint}";
+
+            if (_memoryCache.TryGetValue($"stock_price_{symbol}", out FinnhubQuote cachedQuote))
+            {
+                _dbContext.ExternalApiCalls.Add(new ExternalApiCall
+                {
+                    AccountId = Guid.NewGuid(),
+                    ApiName = ApiName,
+                    Endpoint = endpoint,
+                    IsCached = true
+                });
+                return cachedQuote;
+            }
+
             var client = _httpClientFactory.CreateClient();
 
-            client.BaseAddress = new Uri("https://finnhub.io");
+            client.BaseAddress = new Uri(BaseUrl);
 
-            var response =
-                await client.GetAsync($"/api/v1/quote?symbol={symbol}&token={_configuration["Finnhub:Token"]}");
+            _dbContext.ExternalApiCalls.Add(new ExternalApiCall
+            {
+                AccountId = Guid.NewGuid(),
+                ApiName = ApiName,
+                Endpoint = endpoint,
+                IsCached = false
+            });
+
+            var response = await client.GetAsync(endpoint);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Error fetching stock price");
             }
-            var body = await response.Content.ReadAsStringAsync();
+
             var quote = JsonConvert.DeserializeObject<FinnhubQuote>(await response.Content.ReadAsStringAsync());
+
+            _memoryCache.Set($"stock_price_{symbol}", quote, DateTime.Now.AddMinutes(1));
 
             return quote;
         }

@@ -27,7 +27,7 @@ namespace FantasyStockTrader.Web.Services
         {
             var accountWallet = _dbContext.Wallets.FirstOrDefault(x => x.AccountId == _authContext.Account.Id);
 
-            var stockQuote = await _finnhubApiService.GetPrice(symbol);
+            var stockQuote = await _finnhubApiService.GetPriceAsync(symbol);
             var currentPrice = stockQuote.CurrentPrice;
 
             var maxShareAmount = (int)Math.Floor((double)accountWallet.Amount / currentPrice);

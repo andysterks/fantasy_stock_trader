@@ -28,6 +28,13 @@ namespace FantasyStockTrader.Web
                     var json = JsonConvert.SerializeObject(error);
                     await httpContext.Response.WriteAsync(json);
                 }
+                else
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    var error = new ErrorDTO(ex.Message);
+                    var json = JsonConvert.SerializeObject(error);
+                    await httpContext.Response.WriteAsync(json);
+                }
             }
         }
     }

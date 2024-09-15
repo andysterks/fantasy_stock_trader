@@ -1,7 +1,6 @@
-﻿using FantasyStockTrader.Core;
-using FantasyStockTrader.Core.DatabaseContext;
+﻿using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Integration;
-using Microsoft.AspNetCore.Authorization;
+using FantasyStockTrader.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers;
@@ -13,31 +12,36 @@ public class AccountsController : ControllerBase
     private readonly FantasyStockTraderContext _dbContext;
     private readonly IAuthContext _authContext;
     private readonly IFinnhubApiService _finnhubApiService;
+    private readonly IHoldingsSummaryService _holdingsSummaryService;
 
     public AccountsController(FantasyStockTraderContext dbContext,
         IAuthContext authContext,
-        IFinnhubApiService finnhubApiService)
+        IFinnhubApiService finnhubApiService, 
+        IHoldingsSummaryService holdingsSummaryService)
     {
         _dbContext = dbContext;
         _authContext = authContext;
         _finnhubApiService = finnhubApiService;
+        _holdingsSummaryService = holdingsSummaryService;
     }
 
     [HttpGet("summary")]
-    public AccountSummaryModel GetSummary([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+    public async Task<AccountSummaryModel> GetSummary([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
     {
         var wallet = _dbContext.Wallets.First(x => x.AccountId == _authContext.Account.Id);
 
         var holdings = _dbContext.Holdings
             .Where(x => x.AccountId == _authContext.Account.Id)
+            .ToList()
             .Select(x => new HoldingsModel
             {
                 Symbol = x.Symbol,
                 SharesAmount = x.Shares,
                 CostBasis = x.CostBasis,
-                Value = (double)(_finnhubApiService.GetPrice(x.Symbol).Result.CurrentPrice * x.Shares)
+                Value = (_finnhubApiService.GetPriceAsync(x.Symbol).Result.CurrentPrice *
+                x.Shares)
             })
-            .OrderByDescending(x => x.Value)
+            .OrderByDescending(x => x.Value).ToList()
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -45,12 +49,8 @@ public class AccountsController : ControllerBase
         var totalHoldings = _dbContext.Holdings.Count(x => x.AccountId == _authContext.Account.Id);
         var totalPages = (int)Math.Ceiling((double)totalHoldings / pageSize);
 
-        var accountValue = _dbContext.Holdings
-            .Where(x => x.AccountId == _authContext.Account.Id)
-            .Sum(x => (double)(_finnhubApiService.GetPrice(x.Symbol).Result.CurrentPrice * x.Shares));
-        var accountCostBasis = _dbContext.Holdings
-            .Where(x => x.AccountId == _authContext.Account.Id)
-            .Sum(x => x.CostBasis);
+        var accountValue = _holdingsSummaryService.GetAccountValue(_authContext.Account.Id);
+        var accountCostBasis = _holdingsSummaryService.GetAccountCostBasis(_authContext.Account.Id); 
 
         return new AccountSummaryModel(
             (double)wallet.Amount,

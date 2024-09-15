@@ -58,6 +58,8 @@ public class FantasyStockTraderContext : DbContext
             .HasOne(h => h.Account)
             .WithMany(a => a.Holdings)
             .HasForeignKey(h => h.AccountId);
+
+        modelBuilder.ConfigureExternalApiCall();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -71,6 +73,7 @@ public class FantasyStockTraderContext : DbContext
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Holding> Holdings { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
+    public DbSet<ExternalApiCall> ExternalApiCalls { get; set; }
 }
 
 public class CreatedAtGenerator : ValueGenerator
