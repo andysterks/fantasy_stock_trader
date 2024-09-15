@@ -29,8 +29,22 @@ export function NavMenu() {
           </div>
           <div className={`sm:flex ${isOpen ? 'block' : 'hidden'}`}>
             <div className="px-2 pt-2 pb-4 sm:flex sm:p-0">
-              <Link to="/dashboard" className="block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2">Dashboard</Link>
-              <Link to="/trade" className="mt-1 block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2">Trade</Link>
+              <Link
+                to="/dashboard"
+                className={`block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2 ${
+                  window.location.pathname === '/dashboard' ? 'bg-gray-200' : ''
+                }`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/trade"
+                className={`mt-1 block px-2 py-1 text-gray-700 font-semibold rounded hover:bg-gray-100 sm:mt-0 sm:ml-2 ${
+                  window.location.pathname === '/trade' ? 'bg-gray-200' : ''
+                }`}
+              >
+                Trade
+              </Link>
             </div>
           </div>
         </div>
