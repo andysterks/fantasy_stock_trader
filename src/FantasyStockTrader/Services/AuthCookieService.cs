@@ -29,6 +29,9 @@ namespace FantasyStockTrader.Web.Services
         {
             var cookieOptions = new CookieOptions
             {
+                HttpOnly = true,
+                Secure = true, // Use this in production with HTTPS
+                SameSite = SameSiteMode.Strict,
                 Expires = token.ValidTo
             };
 
@@ -48,6 +51,9 @@ namespace FantasyStockTrader.Web.Services
             int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
             var cookieOptions = new CookieOptions
             {
+                HttpOnly = true,
+                Secure = true, // Use this in production with HTTPS
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.Now.AddDays(refreshTokenValidityInDays)
             };
 

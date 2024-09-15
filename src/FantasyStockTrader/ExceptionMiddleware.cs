@@ -19,12 +19,15 @@ namespace FantasyStockTrader.Web
             {
                 await _next(httpContext);
             }
-            catch (FTSAuthorizationException ex)
+            catch (Exception ex)
             {
-                httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                var error = new ErrorDTO(ex.Message);
-                var json = JsonConvert.SerializeObject(error);
-                await httpContext.Response.WriteAsync(json);
+                if (ex is FSTAuthorizationException)
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    var error = new ErrorDTO(ex.Message);
+                    var json = JsonConvert.SerializeObject(error);
+                    await httpContext.Response.WriteAsync(json);
+                }
             }
         }
     }

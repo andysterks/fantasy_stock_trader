@@ -1,4 +1,3 @@
-
 using FantasyStockTrader.Web.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -37,9 +36,8 @@ public class AuthController : ControllerBase
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken()
     {
-        _refreshTokenRenewalService.Renew();
-
-        return Ok();
+        var newAccessToken = _refreshTokenRenewalService.Renew();
+        return Ok(new { accessToken = newAccessToken });
     }
 
     public class LoginModel

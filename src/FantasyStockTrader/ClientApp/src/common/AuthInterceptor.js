@@ -1,21 +1,22 @@
 import axios from "axios";
 import globalRouter from "./GlobalRouter";
 
-axios.interceptors.response.use(
+const instance = axios.create();
+
+instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest?.url == 'api/auth' && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axios.post("/api/auth/refresh-token");
-        return axios(originalRequest);
+        await axios.post("/api/auth/refresh-token");
+        return instance(originalRequest);
       } catch (err) {
         console.error("Failed to refresh token:", err);
-        // Handle the error, e.g., redirect to the login page
-        console.error("TODO: REDIRECT TO LOGIN PAGE");
+        // Redirect to login page
         if (globalRouter.navigate) {
-          globalRouter.navigate("/");
+          globalRouter.navigate("/login");
         }
         return Promise.reject(err);
       }
@@ -24,4 +25,4 @@ axios.interceptors.response.use(
   }
 );
 
-export default axios;
+export default instance;

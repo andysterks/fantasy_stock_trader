@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using FantasyStockTrader.Core.DatabaseContext;
 using FantasyStockTrader.Core.Exceptions;
 using System.Security.Cryptography;
@@ -8,7 +9,7 @@ namespace FantasyStockTrader.Web.Services
 {
     public interface IRefreshTokenRenewalService
     {
-        void Renew();
+        string Renew();
     }
 
     public class RefreshTokenRenewalService : IRefreshTokenRenewalService
@@ -28,7 +29,7 @@ namespace FantasyStockTrader.Web.Services
             _configuration = configuration;
         }
 
-        public void Renew()
+        public string Renew()
         {
             var refreshToken = _authCookieService.GetRefreshTokenFromCookie();
             VerifyRefreshToken(refreshToken);
@@ -42,19 +43,15 @@ namespace FantasyStockTrader.Web.Services
             var newAccessToken = _authTokenCreationService.CreateToken(matchingSession!.Account.EmailAddress);
             var newRefreshToken = GenerateRefreshToken();
 
-            // store refresh token in db
-            int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out var refreshTokenValidityInDays);
-            var session = new Session
-            {
-                Account = matchingSession.Account,
-                RefreshToken = newRefreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenValidityInDays)
-            };
-            _dbContext.Sessions.Add(session);
+            // Update session with new refresh token
+            matchingSession.RefreshToken = newRefreshToken;
+            matchingSession.ExpiresAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]));
             _dbContext.SaveChanges();
 
             _authCookieService.SetAccessTokenCookie(newAccessToken);
-            _authCookieService.SetRefreshTokenCookie(session);
+            _authCookieService.SetRefreshTokenCookie(matchingSession);
+
+            return new JwtSecurityTokenHandler().WriteToken(newAccessToken);
         }
 
         private void VerifyRefreshToken(string? refreshToken)
