@@ -13,7 +13,7 @@ namespace FantasyStockTrader.Integration
 {
     public interface IFinancialModelingPrepApiService
     {
-        Task<List<CompanyModel>> Search(Guid accountId, string query);
+        Task<List<CompanyModel>> SearchAsync(Guid accountId, string query);
     }
 
     public class FinancialModelingPrepApiService : IFinancialModelingPrepApiService
@@ -37,7 +37,7 @@ namespace FantasyStockTrader.Integration
             _dbContext = dbContext;
         }
 
-        public async Task<List<CompanyModel>> Search(Guid accountId, string query)
+        public async Task<List<CompanyModel>> SearchAsync(Guid accountId, string query)
         {
             var endpoint =
                 $"/api/v3/search?query={query}&exchange=NASDAQ&apikey={_configuration["FinancialModelingPrep:Token"]}";
