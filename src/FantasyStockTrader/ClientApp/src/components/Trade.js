@@ -20,31 +20,45 @@ function Trade() {
   };
 
   return (
-    <div>
-      <div>Trade</div>
-      <div>Search for symbol =&#62; Buy or sell</div>
-      <div>
-        <h1>Search</h1>
-        <form onSubmit={search}>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Trade</h1>
+      <p className="text-lg mb-6">Search for symbol ⇒ Buy or sell</p>
+      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Search</h2>
+        <form onSubmit={search} className="flex mb-4">
           <input
             type="text"
             placeholder="Enter company symbol"
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
+            className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button type="submit">Search</button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Search
+          </button>
         </form>
         <div>
-          <ul>
+          <ul className="divide-y divide-gray-200">
             {companies.map((c) => (
-              <li key={c.symbol} onClick={() => navigateToBuy(c.symbol)}>
-                {c.name} ({c.symbol})
+              <li
+                key={c.symbol}
+                onClick={() => navigateToBuy(c.symbol)}
+                className="py-3 cursor-pointer hover:bg-gray-100 transition duration-150 ease-in-out"
+              >
+                <span className="font-medium">{c.name}</span>{" "}
+                <span className="text-gray-600">({c.symbol})</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
-      <div>Show available cash somewhere</div>
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Available Cash</h2>
+        <p className="text-lg">$10,000.00</p>
+      </div>
     </div>
   );
 }
