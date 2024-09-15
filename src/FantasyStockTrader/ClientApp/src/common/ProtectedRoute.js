@@ -7,6 +7,7 @@ const ProtectedRoute = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("ProtectedRoute - account:", account);
     if (!account) {
       navigate("/login");
     }
