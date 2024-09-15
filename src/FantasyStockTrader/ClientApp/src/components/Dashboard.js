@@ -4,10 +4,16 @@ import axios from "../common/AuthInterceptor";
 function Dashboard() {
   const [accountSummary, setAccountSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    fetchAccountSummary(currentPage);
+  }, [currentPage]);
+
+  const fetchAccountSummary = (page) => {
+    setLoading(true);
     axios
-      .get("api/accounts/summary")
+      .get(`api/accounts/summary?page=${page}&pageSize=8`)
       .then((response) => {
         setAccountSummary(response.data);
         setLoading(false);
@@ -16,7 +22,7 @@ function Dashboard() {
         console.error("Error fetching account summary:", error);
         setLoading(false);
       });
-  }, []);
+  };
 
   const formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -36,7 +42,7 @@ function Dashboard() {
       accountSummary?.holdings?.map((h, i) => (
         <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
           <td className="px-4 py-2 font-medium">{h.symbol}</td>
-          <td className="px-4 py-2 text-right">{h.sharesAmoount}</td>
+          <td className="px-4 py-2 text-right">{h.sharesAmount}</td>
           <td className="px-4 py-2 text-right">{formatCurrency.format(h.value)}</td>
           <td className={`px-4 py-2 text-right font-medium ${h.performance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {h.performance >= 0 ? '+' : '-'}
@@ -44,6 +50,32 @@ function Dashboard() {
           </td>
         </tr>
       ))
+    );
+  };
+
+  const renderPagination = () => {
+    if (!accountSummary || accountSummary.totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 mr-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2">
+          Page {currentPage} of {accountSummary.totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, accountSummary.totalPages))}
+          disabled={currentPage === accountSummary.totalPages}
+          className="px-4 py-2 ml-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        >
+          Next
+        </button>
+      </div>
     );
   };
 
@@ -100,6 +132,7 @@ function Dashboard() {
               </tbody>
             </table>
           </div>
+          {renderPagination()}
         </div>
       </div>
     </div>
