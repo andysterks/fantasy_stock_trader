@@ -1,9 +1,4 @@
 using FantasyStockTrader.Web.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using FantasyStockTrader.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FantasyStockTrader.Web.Controllers;
@@ -23,13 +18,15 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public void Post([FromBody] LoginModel loginModel)
+    public IActionResult Post([FromBody] LoginModel loginModel)
     {
         if (loginModel.EmailAddress == null || loginModel.Password == null)
             // TODO: Create custom exception for invalid incoming params
             throw new Exception();
 
         _loginService.Login(loginModel.EmailAddress, loginModel.Password);
+
+        return Ok(new { loginModel.EmailAddress });
     }
 
     [HttpPost]
