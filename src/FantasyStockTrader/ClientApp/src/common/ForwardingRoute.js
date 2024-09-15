@@ -1,11 +1,18 @@
-import React, { useContext } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
 const ForwardingRoute = () => {
-  const { account, setAccount } = useContext(AuthContext);
+  const { account } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  return account ? <Navigate to="/dashboard" /> : <Outlet />;
+  useEffect(() => {
+    if (account) {
+      navigate("/dashboard");
+    }
+  }, [account, navigate]);
+
+  return account ? null : <Outlet />;
 };
 
 export default ForwardingRoute;
