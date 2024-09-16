@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.json" />
+    <_ContentIncludedByDefault Remove="appsettings.Development.json" />
     <_ContentIncludedByDefault Remove="appsettings.Production.json" />
   </ItemGroup>
 
