@@ -35,7 +35,6 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.json" />
-    <Content Include="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
     <_ContentIncludedByDefault Remove="appsettings.Production.json" />
   </ItemGroup>
 
