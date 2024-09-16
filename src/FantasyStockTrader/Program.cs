@@ -3,8 +3,16 @@ using FantasyStockTrader.Integration;
 using FantasyStockTrader.Web;
 using FantasyStockTrader.Web.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add this block to print out all configuration sources
+Console.WriteLine("Configuration sources:");
+foreach (var source in ((IConfigurationRoot)builder.Configuration).Providers.ToList())
+{
+    Console.WriteLine($" - {source.GetType().Name}");
+}
 
 //builder.Services.AddApplicationInsightsTelemetry(o =>
 //{
@@ -56,6 +64,8 @@ Console.WriteLine($"Current environment: {builder.Environment.EnvironmentName}")
 // Add this to print a specific configuration value
 Console.WriteLine($"ConnectionString: {builder.Configuration.GetConnectionString("FantasyStockTrader")}");
 
+// Print out the value of a specific key from appsettings.Development.json
+Console.WriteLine($"Development-specific value: {builder.Configuration["DevelopmentSpecificKey"]}");
 
 var app = builder.Build();
 
