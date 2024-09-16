@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../common/AuthInterceptor";
 import { useNavigate } from "react-router-dom";
 
 function Trade() {
   const [searchQuery, setSearchQuery] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [wallet, setWallet] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    axios.get("api/wallet").then((response) => {
+      console.log(response.data);
+      setWallet(response.data.amount);
+      setLoading(false);
+    });
+  }, []);
+
   const search = (e) => {
     e.preventDefault();
+    setLoading(true);
     axios
       .get("api/company", { params: { query: searchQuery } })
-      .then((response) => setCompanies(response.data));
+      .then((response) => {
+        setCompanies(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error searching companies:", error);
+        setLoading(false);
+      });
   };
 
   const navigateToBuy = (symbol) => {
@@ -57,7 +75,7 @@ function Trade() {
       </div>
       <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">Available Cash</h2>
-        <p className="text-lg">$10,000.00</p>
+        <p className="text-lg">${wallet}</p>
       </div>
     </div>
   );
