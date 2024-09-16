@@ -49,6 +49,14 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 
 builder.Services.AddMemoryCache();
 
+// Add this line to print the current environment
+Console.WriteLine($"TESTESTESTESTESTESTESTESTESTESTEST");
+Console.WriteLine($"Current environment: {builder.Environment.EnvironmentName}");
+
+// Add this to print a specific configuration value
+Console.WriteLine($"ConnectionString: {builder.Configuration.GetConnectionString("FantasyStockTrader")}");
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
