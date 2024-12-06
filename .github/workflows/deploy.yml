@@ -13,7 +13,7 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     - name: Publish app
-      run: dotnet publish -c Release -o ./publish
+      run: dotnet publish src/FantasyStockTrader/FantasyStockTrader.Web -c Release -o ./publish
     - name: Deploy to DigitalOcean
       uses: appleboy/ssh-action@master
       with:
