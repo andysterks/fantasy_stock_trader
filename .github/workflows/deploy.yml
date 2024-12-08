@@ -25,5 +25,5 @@ jobs:
         script: |
           # Commands to deploy your app on the droplet
           # For example:
-          cp -R /src/FantasyStockTrader /home/fantasy_stock_trader
+          cp -R ./src/FantasyStockTrader /home/fantasy_stock_trader
           systemctl restart fantasy_stock_trader
