@@ -23,7 +23,16 @@ jobs:
         username: ${{ secrets.DROPLET_USER }}
         key: ${{ secrets.DROPLET_SSH_KEY }}
         script: |
-          # Commands to deploy your app on the droplet
-          # For example:
-          cp -R $GITHUB_WORKSPACE/src/FantasyStockTrader /home/fantasy_stock_trader
-          systemctl restart fantasy_stock_trader
+          mkdir -p /home/fantasy_stock_trader
+          rm -rf /home/fantasy_stock_trader/*
+        source: "publish/*"
+        target: "/home/fantasy_stock_trader"
+        strip_components: 1
+    - name: Restart Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DROPLET_IP }}
+        username: ${{ secrets.DROPLET_USER }}
+        key: ${{ secrets.DROPLET_SSH_KEY }}
+        script: |
+          sudo systemctl restart fantasy_stock_trader
