@@ -18,7 +18,7 @@ namespace FantasyStockTrader.Core.DatabaseContext
         public FantasyStockTraderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<FantasyStockTraderContext>();
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"),
+            optionsBuilder.UseSqlite(_configuration.GetConnectionString("Default"),
                 o => o.MigrationsAssembly("FantasyStockTrader.Core"));
             optionsBuilder.EnableSensitiveDataLogging();
 
