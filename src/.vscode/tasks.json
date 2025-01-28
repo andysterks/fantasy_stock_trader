@@ -1,0 +1,67 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm watch",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "start"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/FantasyStockTrader/ClientApp",
+        "shell": {
+          "executable": "cmd.exe",
+          "args": [
+            "/c",
+            "start",
+            "cmd.exe",
+            "/k"
+          ]
+        }
+      },
+      "problemMatcher": [],
+      "isBackground": true,
+      "runOptions": {
+          "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/FantasyStockTrader/FantasyStockTrader.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/FantasyStockTrader/FantasyStockTrader.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/FantasyStockTrader/FantasyStockTrader.Web.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
