@@ -66,7 +66,7 @@ public class FantasyStockTraderContext : DbContext
     {
         optionsBuilder
         .EnableSensitiveDataLogging()
-        .UseSqlite(_configuration.GetConnectionString("Data Source=AppData/fantasy_stock_trader.db"), 
+        .UseSqlite("Data Source=AppData/fantasy_stock_trader.db", 
             o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 
