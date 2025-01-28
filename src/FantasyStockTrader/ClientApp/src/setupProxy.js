@@ -2,7 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const { env } = require('process');
 console.log("PORRRRRRRRRRRRRRRRRRTS: ", env.ASPNETCORE_HTTPS_PORT);
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-  env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:9417';
+  env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:5167';
 
 const context = [
   "/api",
