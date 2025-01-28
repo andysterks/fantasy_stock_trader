@@ -18,6 +18,7 @@ namespace FantasyStockTrader.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Post([FromBody] AccountInputModel accountInputModel)
         {
             var account = _dbContext.Accounts.FirstOrDefault(x => x.EmailAddress == accountInputModel.EmailAddress);
