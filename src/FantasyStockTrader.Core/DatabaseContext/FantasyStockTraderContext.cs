@@ -64,8 +64,7 @@ public class FantasyStockTraderContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("FantasyStockTrader"), 
-            o => o.MigrationsAssembly("FantasyStockTrader.Core"));
+        optionsBuilder.UseSqlite("Data Source=fantasy_stock_trader.db");
     }
 
     public DbSet<Account> Accounts { get; set; }
