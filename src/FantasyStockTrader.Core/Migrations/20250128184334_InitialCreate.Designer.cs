@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FantasyStockTrader.Core.Migrations
 {
     [DbContext(typeof(FantasyStockTraderContext))]
-    [Migration("20250128183513_InitialCreate")]
+    [Migration("20250128184334_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
