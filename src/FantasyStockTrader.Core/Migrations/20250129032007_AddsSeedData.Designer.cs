@@ -3,6 +3,7 @@ using System;
 using FantasyStockTrader.Core.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FantasyStockTrader.Core.Migrations
 {
     [DbContext(typeof(FantasyStockTraderContext))]
-    partial class FantasyStockTraderContextModelSnapshot : ModelSnapshot
+    [Migration("20250129032007_AddsSeedData")]
+    partial class AddsSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");

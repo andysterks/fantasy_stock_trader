@@ -74,6 +74,7 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.Entity<Wallet>().HasData(
             new Wallet
             {
+                Id = Guid.NewGuid(),
                 AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
                 Amount = 60191
             }    
@@ -82,6 +83,7 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.Entity<Holding>().HasData(
             new Holding
             {
+                Id = Guid.NewGuid(),
                 AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
                 Symbol = "TSLA",
                 Shares = 100,
@@ -93,6 +95,7 @@ public class FantasyStockTraderContext : DbContext
         modelBuilder.Entity<Transaction>().HasData(
             new Transaction
             {
+                Id = Guid.NewGuid(),
                 AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
                 Symbol = "TSLA",
                 Type = "BUY",
