@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace FantasyStockTrader.Core.DatabaseContext
 {
@@ -18,11 +19,12 @@ namespace FantasyStockTrader.Core.DatabaseContext
         public FantasyStockTraderContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<FantasyStockTraderContext>();
-            optionsBuilder.UseSqlite(_configuration.GetConnectionString("Default"),
+            var coreAssemblyDirectory = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FantasyStockTraderContext)).Location);
+            optionsBuilder.UseSqlite($"Data Source={Path.Combine(coreAssemblyDirectory, "AppData", "fantasy_stock_trader.db")}",
                 o => o.MigrationsAssembly("FantasyStockTrader.Core"));
             optionsBuilder.EnableSensitiveDataLogging();
 
-            return new FantasyStockTraderContext(optionsBuilder.Options, _configuration);
+            return new FantasyStockTraderContext(optionsBuilder.Options);
         }
     }
 }

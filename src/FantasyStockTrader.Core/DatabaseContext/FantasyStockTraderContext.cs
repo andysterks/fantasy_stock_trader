@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace FantasyStockTrader.Core.DatabaseContext;
 
 public class FantasyStockTraderContext : DbContext
 {
-    private IConfiguration _configuration;
 
-    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options, IConfiguration configuration) : base(options)
+    public FantasyStockTraderContext(DbContextOptions<FantasyStockTraderContext> options) : base(options)
     {
-        _configuration = configuration;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,13 +59,56 @@ public class FantasyStockTraderContext : DbContext
             .HasForeignKey(h => h.AccountId);
 
         modelBuilder.ConfigureExternalApiCall();
+
+        modelBuilder.Entity<Account>().HasData(
+            new Account {
+                Id = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
+                EmailAddress = "andy@email.com",
+                Password = "$2b$10$JKnwr5mA2ux4iN1RXbAVC.92tIwUrjmxiOZfG1DDK/GOtwkPl/7p6",
+                FirstName = "Andy",
+                LastName = "Sterkowitz",
+                CreatedAt = new DateTime(2025, 1, 29, 0, 0, 34)
+            }
+        );
+
+        modelBuilder.Entity<Wallet>().HasData(
+            new Wallet
+            {
+                AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
+                Amount = 60191
+            }    
+        );
+
+        modelBuilder.Entity<Holding>().HasData(
+            new Holding
+            {
+                AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
+                Symbol = "TSLA",
+                Shares = 100,
+                CostBasis = 39809,
+                CreatedAt = new DateTime(2025, 1, 29, 0, 2, 54)
+            }
+        );
+
+        modelBuilder.Entity<Transaction>().HasData(
+            new Transaction
+            {
+                AccountId = Guid.Parse("EB0E7BD5-DF42-46CC-BBE7-7ECB8D8718D9"),
+                Symbol = "TSLA",
+                Type = "BUY",
+                Amount = 100,
+                Price = 398.09,
+                CreatedAt = new DateTime(2025, 1, 29, 0, 2, 54)
+            }
+        );
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        var coreAssemblyDirectory = Path.GetDirectoryName(Assembly.GetAssembly(typeof(FantasyStockTraderContext)).Location);
         optionsBuilder
         .EnableSensitiveDataLogging()
-        .UseSqlite("Data Source=AppData/fantasy_stock_trader.db", 
+        .UseSqlite($"Data Source={Path.Combine(coreAssemblyDirectory, "AppData", "fantasy_stock_trader.db")}", 
             o => o.MigrationsAssembly("FantasyStockTrader.Core"));
     }
 
